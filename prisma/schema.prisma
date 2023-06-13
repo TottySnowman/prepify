@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Allergens {
+  ID             Int              @id @default(autoincrement())
+  allergy        String?          @db.VarChar(255)
+  Recipe_Allergy Recipe_Allergy[] @ignore
+}
+
+model Category {
+  ID     Int      @id @default(autoincrement())
+  name   String?  @db.VarChar(255)
+  Recipe Recipe[]
+}
+
+model Cuisine {
+  ID           Int      @id @default(autoincrement())
+  cuisine_type String?  @db.VarChar(255)
+  Recipe       Recipe[]
+}
+
+model Recipe {
+  ID             Int              @id @default(autoincrement())
+  title          String?          @db.VarChar(255)
+  prep_time      DateTime?        @db.Time(0)
+  cook_time      DateTime?        @db.Time(0)
+  id_cuisine     Int?
+  id_type        Int?
+  id_category    Int?
+  Cuisine        Cuisine?         @relation(fields: [id_cuisine], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "Recipe_ibfk_1")
+  Category       Category?        @relation(fields: [id_category], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "Recipe_ibfk_3")
+  Recipe_Allergy Recipe_Allergy[] @ignore
+  Weekly_Recipe  Weekly_Recipe[]  @ignore
+
+  @@index([id_cuisine], map: "id_cuisine")
+  @@index([id_type], map: "id_type")
+  @@index([id_category], map: "id_category")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Weekly_Recipe {
+  week      Int
+  year      Int
+  id_recipe Int
+  id_user   Int
+  users     users?  @relation(fields: [id_user], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "Weekly_Recipe_ibfk_1")
+  Recipe    Recipe? @relation(fields: [id_recipe], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "Weekly_Recipe_ibfk_2")
+
+  @@id([week, year, id_user])
+}
+
+model users {
+  ID              Int             @id @default(autoincrement())
+  username        String          @unique @db.VarChar(255)
+  email           String          @unique @db.VarChar(255)
+  servings        Int?
+  notion_api_key  String?         @db.VarChar(255)
+  profile_picture String?         @db.LongText
+  created_at      DateTime        @default(now()) @db.Timestamp(0)
+  Weekly_Recipe   Weekly_Recipe[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Recipe_Allergy {
+  id_recipe  Int
+  id_allergy Int
+  Allergens  Allergens? @relation(fields: [id_allergy], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "Recipe_Allergy_ibfk_1")
+  Recipe     Recipe?    @relation(fields: [id_recipe], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "Recipe_Allergy_ibfk_2")
+
+  @@id([id_recipe, id_allergy])
+  @@index([id_allergy], map: "id_allergy")
+  @@index([id_recipe], map: "id_recipe")
+}
