@@ -36,7 +36,9 @@ const Nav = () => {
           <p>Prepify</p>
         </Link>
       </div>
-
+      <div className="navbar-center">
+        
+      </div>
       <div className="navbar-end sm:flex hidden p-5">
         {session?.user ? (
           <div className="dropdown dropdown-hover">
@@ -52,6 +54,9 @@ const Nav = () => {
               </div>
             </Link>
             <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li>
+                <Link href="/profile">Your Profile</Link>
+              </li>
               <li>
                 <button className="btn btn-secondary" onClick={() => signOut()}>
                   Log out
