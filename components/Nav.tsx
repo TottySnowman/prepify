@@ -9,9 +9,10 @@ import {
   getProviders,
   ClientSafeProvider,
 } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 const Nav = () => {
   const { data: session } = useSession();
+  const loginDialog = useRef<HTMLDialogElement | null>(null);
   const [provider, setProvider] = useState<Record<
     string,
     ClientSafeProvider
@@ -24,12 +25,14 @@ const Nav = () => {
     fetchProviders();
   });
   function openLoginPanel() {
-    const login_dialog = document.getElementById("login_dialog");
-    login_dialog.showModal();
+    if (loginDialog.current) {
+      const login = loginDialog.current;
+      login.showModal();
+    }
   }
   return (
     <>
-      <nav className="navbar mb-16 pt-3">
+      <nav className="navbar mb-16 pt-3 min-h-fit">
         <div className="navbar-start">
           <Link href="/" className="flex gap-2 flex-center items-center">
             <Image
@@ -97,7 +100,7 @@ const Nav = () => {
           )}
         </div>
       </nav>
-      <dialog id="login_dialog">
+      <dialog id="login_dialog" ref={loginDialog} className="modal">
         <LoginPanel />
       </dialog>
     </>
