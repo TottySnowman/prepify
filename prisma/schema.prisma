@@ -12,6 +12,7 @@ model Allergens {
   ID             Int              @id @default(autoincrement())
   allergy        String?          @db.VarChar(255)
   Recipe_Allergy Recipe_Allergy[] @ignore
+  User_Allergies User_Allergies[]
 }
 
 model Category {
@@ -57,14 +58,15 @@ model Weekly_Recipe {
 }
 
 model users {
-  ID              Int             @id @default(autoincrement())
-  username        String          @unique @db.VarChar(255)
-  email           String          @unique @db.VarChar(255)
+  ID              Int              @id @default(autoincrement())
+  username        String           @unique @db.VarChar(255)
+  email           String           @unique @db.VarChar(255)
   servings        Int?
-  notion_api_key  String?         @db.VarChar(255)
-  profile_picture String?         @db.LongText
-  created_at      DateTime        @default(now()) @db.Timestamp(0)
+  notion_api_key  String?          @db.VarChar(255)
+  profile_picture String?          @db.LongText
+  created_at      DateTime         @default(now()) @db.Timestamp(0)
   Weekly_Recipe   Weekly_Recipe[]
+  User_Allergies  User_Allergies[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -77,4 +79,16 @@ model Recipe_Allergy {
   @@id([id_recipe, id_allergy])
   @@index([id_allergy], map: "id_allergy")
   @@index([id_recipe], map: "id_recipe")
+}
+
+model User_Allergies {
+  id_user    Int
+  id_allergy Int
+
+  Allergens Allergens? @relation(fields: [id_allergy], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Allergy_ibfk_1")
+  User      users?     @relation(fields: [id_user], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Allergy_ibfk_2")
+
+  @@id([id_user, id_allergy])
+  @@index([id_user], map: "id_user")
+  @@index([id_allergy], map: "id_allergy")
 }

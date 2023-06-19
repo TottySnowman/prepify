@@ -1,8 +1,12 @@
 "use client";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useEffect } from "react";
+import Allergy from "@/components/Allergy";
+
 const Profile = () => {
   const { data: session } = useSession();
+
   return (
     <>
       {session?.user ? (
@@ -21,7 +25,11 @@ const Profile = () => {
               </h3>
             </div>
           </div>
-          <div className="col-span-4"></div>
+          <div className="col-span-4">
+            <div className="col-span-1">
+              <Allergy />
+            </div>
+          </div>
         </div>
       ) : (
         <h1>Whoops seems like you are not logged in!</h1>
