@@ -37,9 +37,26 @@ const Allergy = () => {
     setAllAllergies(updatedAllAllergies || []);
   };
 
-  const handleDeleteAllergy = (allergyID: number) => {};
+  const handleDeleteAllergy = (allergyID: number) => {
+    const selectedAllergy = SelectedAllergies?.find(
+      (allergy) => allergy.ID === number
+    );
+    if (!selectedAllergy) {
+      alert("Allergy not found!");
+      return;
+    }
+
+    const updatedAllAllergies = [...(AllAllergies || []), selectedAllergy];
+    const updatedSelectedAllergies = SelectedAllergies.filter(
+      (allergy) => allergy.ID !== number
+    );
+
+    setAllAllergies(updatedAllAllergies);
+    setSelectedAllergies(updatedSelectedAllergies);
+  };
 
   const handleSaveClick = () => {};
+
   useEffect(() => {
     const fetchAllergies = async () => {
       const session = await getSession();
@@ -105,5 +122,4 @@ const Allergy = () => {
     </>
   );
 };
-
 export default Allergy;
