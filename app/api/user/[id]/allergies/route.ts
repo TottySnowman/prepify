@@ -25,9 +25,9 @@ export const GET = async (request: NextRequest, {params} : userAllergies) => {
     });
     const idsToRemove = new Set(userAllergies.map(allergy => allergy.id_allergy));
     all_allergies = all_allergies.filter(allergy => !idsToRemove.has(allergy.ID));
-    
+
     const response = {
-      "SelectedAllergies": userAllergies,
+      "SelectedAllergies": userAllergies.map(userAllergy => userAllergy.Allergens),
       "Allergies": all_allergies
     }
     return new Response(JSON.stringify(response), { status: 200 });

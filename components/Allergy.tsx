@@ -18,9 +18,28 @@ const Allergy = () => {
   const [AllAllergies, setAllAllergies] = useState<allergy[] | null>(null);
 
   const handleAllergyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    alert(value);
+    const selectedAllergy = AllAllergies?.find(
+      (allergy) => allergy.ID === parseInt(event.target.value)
+    );
+    if (!selectedAllergy) {
+      alert("Allergy not found!");
+      return;
+    }
+    const updatedSelectedAllergies = [
+      ...(SelectedAllergies || []),
+      selectedAllergy,
+    ];
+    setSelectedAllergies(updatedSelectedAllergies);
+
+    const updatedAllAllergies = AllAllergies?.filter(
+      (allergy) => allergy.ID !== parseInt(event.target.value)
+    );
+    setAllAllergies(updatedAllAllergies || []);
   };
+
+  const handleDeleteAllergy = (allergyID: number) => {};
+
+  const handleSaveClick = () => {};
   useEffect(() => {
     const fetchAllergies = async () => {
       const session = await getSession();
@@ -36,7 +55,7 @@ const Allergy = () => {
       }
     };
     fetchAllergies();
-  });
+  }, []);
 
   return (
     <>
@@ -44,9 +63,17 @@ const Allergy = () => {
         <h3>Already selected allergies</h3>
 
         {SelectedAllergies ? (
-          <div className="grid grid-cols-4">
+          <div className="grid grid-cols-5">
             {SelectedAllergies.map((allergy) => (
-              <div>{allergy.allergy}</div>
+              <span className="border bg-neutral rounded-full p-2 w-1/2 col-span-1 text-center mb-3">
+                {allergy.allergy}
+                <button
+                  className="rounded-full ml-4 border-neutral"
+                  onClick={() => handleDeleteAllergy(allergy.ID)}
+                >
+                  x
+                </button>
+              </span>
             ))}
           </div>
         ) : (
@@ -70,6 +97,10 @@ const Allergy = () => {
         ) : (
           <h4>Whoops seems like there are no allergies to choose from!</h4>
         )}
+
+        <button className="btn btn-primary" onClick={handleSaveClick}>
+          Save allergies!
+        </button>
       </div>
     </>
   );
