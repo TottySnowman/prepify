@@ -39,7 +39,7 @@ const Allergy = () => {
 
   const handleDeleteAllergy = (allergyID: number) => {
     const selectedAllergy = SelectedAllergies?.find(
-      (allergy) => allergy.ID === number
+      (allergy) => allergy.ID === allergyID
     );
     if (!selectedAllergy) {
       alert("Allergy not found!");
@@ -47,12 +47,12 @@ const Allergy = () => {
     }
 
     const updatedAllAllergies = [...(AllAllergies || []), selectedAllergy];
-    const updatedSelectedAllergies = SelectedAllergies.filter(
-      (allergy) => allergy.ID !== number
+    const updatedSelectedAllergies = SelectedAllergies?.filter(
+      (allergy) => allergy.ID !== allergyID
     );
 
     setAllAllergies(updatedAllAllergies);
-    setSelectedAllergies(updatedSelectedAllergies);
+    setSelectedAllergies(updatedSelectedAllergies || []);
   };
 
   const handleSaveClick = () => {};

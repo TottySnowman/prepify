@@ -45,8 +45,9 @@ export const GET = async (request: NextRequest, {params} : userAllergies) => {
 
 export const PATCH = async (request: NextRequest, {params} : updatedUserAllergies) =>{
   //Upsert machen von allen IDs
+  let user_id:number;
   try{
-    const user_id = parseInt(params.id);
+      user_id = parseInt(params.id);
   }catch(error){
     return new Response("Failed to login!", {status: 502});
   }
@@ -55,18 +56,9 @@ export const PATCH = async (request: NextRequest, {params} : updatedUserAllergie
 
    const selected_allergies = params.selected_allergies;
   let all_allergies = await prisma.allergens.findMany();
-   selected_allergies.forEach(allergy_id =>{
+   selected_allergies.forEach(async allergy_id =>{
     //Check if the allergy is valid
 
-    await prisma.user_Allergies.upsert({
-      where:{
-        id_user: user_id
-      },
-      create:{
-        id_user: user_id,
-        id_allery: allergy_id
-      },
-      update:{}
-    })
+    
    })
 }
