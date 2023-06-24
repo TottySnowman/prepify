@@ -1,6 +1,7 @@
 "use client";
 import { getSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type allergy = {
   ID: number;
@@ -16,7 +17,9 @@ const Allergy = () => {
     null
   );
   const [AllAllergies, setAllAllergies] = useState<allergy[] | null>(null);
-
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [ToastVisible, setToastVisible] = useState("invisible");
+  const router = useRouter();
   const handleAllergyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedAllergy = AllAllergies?.find(
       (allergy) => allergy.ID === parseInt(event.target.value)
@@ -53,9 +56,28 @@ const Allergy = () => {
 
     setAllAllergies(updatedAllAllergies);
     setSelectedAllergies(updatedSelectedAllergies || []);
+    setSelectedIndex(0);
   };
 
-  const handleSaveClick = () => {};
+  const handleSaveClick = async () => {
+    const session = await getSession();
+    if (!session?.user) {
+      return;
+    }
+    const resp = await fetch(`api/user/${session.user.id}/allergies`, {
+      method: "POST",
+      body: JSON.stringify({
+        selected_allergies: SelectedAllergies,
+      }),
+    });
+    if (resp.ok) {
+      router.push("/profile");
+      setToastVisible("visible");
+      setTimeout(() => {
+        setToastVisible("invisible");
+      }, 2000);
+    }
+  };
 
   useEffect(() => {
     const fetchAllergies = async () => {
@@ -75,48 +97,59 @@ const Allergy = () => {
   }, []);
 
   return (
-    <div>
-      <h3>Already selected allergies</h3>
-      {SelectedAllergies ? (
-        <div className="grid grid-cols-5">
-          {SelectedAllergies.map((allergy) => (
-            <span className="border bg-neutral rounded-full p-2 w-1/2 col-span-1 text-center mb-3">
-              {allergy.allergy}
-              <button
-                className="rounded-full ml-4 border-neutral"
-                onClick={() => handleDeleteAllergy(allergy.ID)}
+    <>
+      <div>
+        <h3>Already selected allergies</h3>
+        {SelectedAllergies ? (
+          <div className="grid grid-cols-5">
+            {SelectedAllergies.map((allergy) => (
+              <span
+                className="border bg-neutral rounded-full p-2 w-1/2 col-span-1 text-center mb-3"
+                key={allergy.ID.toString()}
               >
-                x
-              </button>
-            </span>
-          ))}
-        </div>
-      ) : (
-        <h4>No allergies selected!</h4>
-      )}
-      <h3 className="mb-4">Add your allergies</h3>
-      {AllAllergies ? (
-        <>
-          <select
-            className="select select-primary w-full max-w-xs"
-            onChange={handleAllergyChange}
-          >
-            <option disabled selected>
-              Select Allergy
-            </option>
-            {AllAllergies.map((allergy) => (
-              <option value={allergy.ID}>{allergy.allergy}</option>
+                {allergy.allergy}
+                <button
+                  className="rounded-full ml-4 border-neutral"
+                  onClick={() => handleDeleteAllergy(allergy.ID)}
+                >
+                  x
+                </button>
+              </span>
             ))}
-          </select>
-        </>
-      ) : (
-        <h4>Whoops seems like there are no allergies to choose from!</h4>
-      )}
+          </div>
+        ) : (
+          <h4>No allergies selected!</h4>
+        )}
+        <h3 className="mb-4">Add your allergies</h3>
+        {AllAllergies ? (
+          <>
+            <select
+              className="select select-primary w-full max-w-xs"
+              onChange={handleAllergyChange}
+              value={selectedIndex}
+            >
+              <option key={"0"}>Select Allergy</option>
+              {AllAllergies.map((allergy) => (
+                <option value={allergy.ID} key={allergy.ID.toString()}>
+                  {allergy.allergy}
+                </option>
+              ))}
+            </select>
+          </>
+        ) : (
+          <h4>Whoops seems like there are no allergies to choose from!</h4>
+        )}
 
-      <button className="btn btn-primary" onClick={handleSaveClick}>
-        Save allergies!
-      </button>
-    </div>
+        <button className="btn btn-primary" onClick={handleSaveClick}>
+          Save allergies!
+        </button>
+      </div>
+      <div className={`toast toast-end ${ToastVisible}`}>
+        <div className="alert alert-success">
+          <span>Successfully changed allergies!</span>
+        </div>
+      </div>
+    </>
   );
 };
 export default Allergy;
