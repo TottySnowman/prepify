@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import prisma from "../../../db_client"
 type userAllergies = {
   params:{
@@ -20,11 +20,10 @@ type Typeallergy = {
 }
 export const GET = async (request: NextRequest, {params} : userAllergies) => {
   const id = params.id;
-  let all_allergies = await prisma.allergens.findMany();
   if(!id){
     return new Response("Failed to login!", {status:502});
   }
-
+  let all_allergies = await prisma.allergens.findMany();
   try{
       const parsedUserID = parseInt(id);
       const userAllergies = await prisma.user_Allergies.findMany({

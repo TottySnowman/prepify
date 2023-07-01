@@ -2,6 +2,7 @@
 import { getSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Toast from "./Toast";
 
 type allergy = {
   ID: number;
@@ -18,7 +19,8 @@ const Allergy = () => {
   );
   const [AllAllergies, setAllAllergies] = useState<allergy[] | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [ToastVisible, setToastVisible] = useState("invisible");
+  const [ToastMessage, setToastMessage] = useState<string>("");
+  const [ToastVisible, setToastVisible] = useState<boolean>(false);
   const router = useRouter();
   const handleAllergyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedAllergy = AllAllergies?.find(
@@ -71,11 +73,9 @@ const Allergy = () => {
       }),
     });
     if (resp.ok) {
+      setToastMessage("Successfully changed allergies!");
+      setToastVisible(true);
       router.push("/profile");
-      setToastVisible("visible");
-      setTimeout(() => {
-        setToastVisible("invisible");
-      }, 2000);
     }
   };
 
@@ -139,16 +139,17 @@ const Allergy = () => {
         ) : (
           <h4>Whoops seems like there are no allergies to choose from!</h4>
         )}
-
-        <button className="btn btn-primary" onClick={handleSaveClick}>
-          Save allergies!
-        </button>
-      </div>
-      <div className={`toast toast-end ${ToastVisible}`}>
-        <div className="alert alert-success">
-          <span>Successfully changed allergies!</span>
+        <div className="flex float-right pr-9">
+          <button className="btn btn-primary" onClick={() => handleSaveClick()}>
+            Save allergies!
+          </button>
         </div>
       </div>
+      <Toast
+        toastMessage={ToastMessage}
+        visible={ToastVisible}
+        ParentVisible={setToastVisible}
+      />
     </>
   );
 };
