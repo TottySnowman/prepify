@@ -19,7 +19,6 @@ const Diet = () => {
         const response = await fetch(`/api/user/${session.user.id}/diet`);
         if (response.ok) {
           const diets: diet_response = await response.json();
-          console.log(diets.All_Diets);
           setAllDiets(diets.All_Diets);
           setSelectedDiet(diets.SelectedDiets);
         }
@@ -27,7 +26,30 @@ const Diet = () => {
     };
     getDiet();
   }, []);
-  return <h1>Diet</h1>;
+  return (
+    <div>
+      <h1>Diet</h1>
+      <br />
+      {AllDiets ? (
+        <>
+          <div>
+            {SelectedDiet?.map((diet) => (
+              <span>{diet.diet}</span>
+            ))}
+          </div>
+          All available diets:
+          <select className="select select-primary w-full max-w-xs">
+            <option key={"0"}>Select Diet</option>
+            {AllDiets?.map((diet) => (
+              <option value={diet.id}>{diet.diet}</option>
+            ))}
+          </select>
+        </>
+      ) : (
+        <></>
+      )}
+    </div>
+  );
 };
 
 export default Diet;

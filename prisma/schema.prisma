@@ -65,9 +65,12 @@ model users {
   notion_api_key  String?          @db.VarChar(255)
   profile_picture String?          @db.LongText
   created_at      DateTime         @default(now()) @db.Timestamp(0)
+  id_meal_type    Int?
   Weekly_Recipe   Weekly_Recipe[]
   User_Allergies  User_Allergies[]
   User_Diet       User_Diet[]
+
+  meal_type meal_type? @relation(fields: [id_meal_type], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Meal_Type")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -109,4 +112,12 @@ model User_Diet {
 
   @@id([id_user, id_diet])
   @@index([id_user], map: "id_user")
+}
+
+model meal_type {
+  ID    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(255)
+  users users[]
+
+  @@index([ID])
 }
