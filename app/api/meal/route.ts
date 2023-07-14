@@ -13,7 +13,10 @@ export const POST = async(request: NextRequest) =>{
             id_user:{
                 in: sentUserID
             }
-        }
+        },
+        include: {
+        Allergens: true,
+      },
     })
 
     console.log("All Allergies",allergies);
@@ -22,6 +25,9 @@ export const POST = async(request: NextRequest) =>{
             id_user:{
                 in: sentUserID
             }
+        },
+        include:{
+            Diet: true
         }
     })
 
@@ -33,9 +39,26 @@ export const POST = async(request: NextRequest) =>{
         }
     })
     console.log("UserInfo:", user_info);
+    const apiKey = process.env.SpoonacularAPIKey;
+    const apiEndpoint = "https://api.spoonacular.com/recipes/complexSearch";
+    
     user_info.forEach(user=>{
         const user_allergies = allergies.filter(allergy => allergy.id_user === user.ID);
-        console.log("current user allergies: ", user_allergies);
+        const user_diets = diets.filter(diet => diet.id_user === user.ID);
+        let intolerancesString = "";
+        let dietString = "";
 
+        user_allergies.forEach(allergey => {
+            intolerancesString += allergey.Allergey + ","
+        });
+        user_diets.forEach(diet => {
+            dietString += "&diet=" + diet.Diet
+        });
+        //Fetch Receipe from spoonacular API
+        console.log("current user allergies: ", intolerancesString);
+        let full_api_url = `${apiEndpoint}?apiKey=${apiKey}&sort=random&intolerances=${intolerancesString}&number=1${dietString}`;
+        const response = await fetch(full_api_url);
     })
+
+    //Insert into DB with prisma.createMany()
 }

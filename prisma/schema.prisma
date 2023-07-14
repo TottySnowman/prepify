@@ -50,9 +50,9 @@ model Weekly_Recipe {
   week      Int
   year      Int
   id_recipe Int
+  recipe_name String
   id_user   Int
   users     users?  @relation(fields: [id_user], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "Weekly_Recipe_ibfk_1")
-  Recipe    Recipe? @relation(fields: [id_recipe], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "Weekly_Recipe_ibfk_2")
 
   @@id([week, year, id_user])
 }
