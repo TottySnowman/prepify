@@ -1,5 +1,7 @@
 import prisma from "../db_client";
 import { NextRequest } from "next/server";
+import jwt from "jsonwebtoken";
+
 type Weekly_Recipe = {
   week: number;
   year: number;
@@ -9,6 +11,19 @@ type Weekly_Recipe = {
 };
 
 export const POST = async (request: NextRequest) => {
+  const { authorization_token } = await request.json();
+  if (!authorization_token || !authorization_token.startsWith("Bearer ")) {
+    return new Response("No Authorization-Token given!", { status: 401 });
+  }
+
+  const sent_token = authorization_token.split(" ")[1];
+
+  try {
+    jwt.verify(sent_token, process.env.AUTHORIZATION_KEY);
+  } catch (e) {
+    return new Response("Wrong key included!", { status: 401 });
+  }
+
   const currentWeekNumber = getCurrentWeekNumber();
   const currentYear = new Date().getFullYear();
   const user_info = await prisma.users.findMany();

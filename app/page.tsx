@@ -2,13 +2,8 @@
 
 export default function Home() {
   async function handleUserClick() {
-    const userID: number[] = [5, 9];
-    const body = {
-      sentUserID: userID,
-    };
     const response = await fetch("api/meal", {
-      method: "POST",
-      body: JSON.stringify(body),
+      method: "GET",
     });
   }
   return (
