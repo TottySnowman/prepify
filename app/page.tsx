@@ -5,6 +5,9 @@ export default function Home() {
     const response = await fetch("api/meal", {
       method: "GET",
     });
+    if (response.ok) {
+      console.log(await response.json());
+    }
   }
   return (
     <div className="">

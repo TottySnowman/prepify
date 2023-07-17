@@ -1,6 +1,7 @@
 import prisma from "../db_client";
 import { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
+import { headers } from "next/headers";
 
 type Weekly_Recipe = {
   week: number;
@@ -10,17 +11,17 @@ type Weekly_Recipe = {
   id_user: number;
 };
 
-export const POST = async (request: NextRequest) => {
-  const { authorization_token } = await request.json();
-  if (!authorization_token || !authorization_token.startsWith("Bearer ")) {
+export const GET = async (request: NextRequest) => {
+  const headerList = headers();
+  const sent_token = headerList.get("authorization_token");
+  if (!sent_token) {
     return new Response("No Authorization-Token given!", { status: 401 });
   }
 
-  const sent_token = authorization_token.split(" ")[1];
-
   try {
-    jwt.verify(sent_token, process.env.AUTHORIZATION_KEY);
+    jwt.verify(sent_token, process.env.AUTHORIZATION_KEY as Secret);
   } catch (e) {
+    console.log(e);
     return new Response("Wrong key included!", { status: 401 });
   }
 
@@ -42,7 +43,9 @@ export const POST = async (request: NextRequest) => {
   });
 
   if (needed_users.length === 0) {
-    return new Response("No Users are needed to update!", { status: 200 });
+    return new Response(JSON.stringify("No Users are needed to update!"), {
+      status: 200,
+    });
   }
   const userIDs: number[] = needed_users.map((user) => user.id_user);
 

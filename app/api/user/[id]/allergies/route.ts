@@ -47,7 +47,9 @@ export const GET = async (request: NextRequest, { params }: userAllergies) => {
     };
     return new Response(JSON.stringify(response), { status: 200 });
   } catch (error) {
-    return new Response("Failed to load user allergies!", { status: 501 });
+    return new Response(JSON.stringify("Failed to load user allergies!"), {
+      status: 501,
+    });
   }
 };
 
@@ -59,7 +61,7 @@ export const POST = async (
   try {
     user_id = parseInt(params.id);
   } catch (error) {
-    return new Response("Failed to login!", { status: 502 });
+    return new Response(JSON.stringify("Failed to login!"), { status: 502 });
   }
   const { selected_allergies } = await request.json();
   const all_allergies = await prisma.allergens.findMany();
@@ -102,9 +104,14 @@ export const POST = async (
       });
     });
   } catch (error) {
-    return new Response("Failed to update allergies! Try again!", {
-      status: 502,
-    });
+    return new Response(
+      JSON.stringify("Failed to update allergies! Try again!"),
+      {
+        status: 502,
+      }
+    );
   }
-  return new Response("Successfually updated your allergies!", { status: 200 });
+  return new Response(JSON.stringify("Successfually updated your allergies!"), {
+    status: 200,
+  });
 };

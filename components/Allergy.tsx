@@ -72,9 +72,9 @@ const Allergy = () => {
         selected_allergies: SelectedAllergies,
       }),
     });
+    setToastMessage(await resp.json());
+    setToastVisible(true);
     if (resp.ok) {
-      setToastMessage("Successfully changed allergies!");
-      setToastVisible(true);
       router.push("/profile");
     }
   };
