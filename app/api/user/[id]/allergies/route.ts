@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import prisma from "../../../db_client";
+
 type userAllergies = {
   params: {
     id: string;
