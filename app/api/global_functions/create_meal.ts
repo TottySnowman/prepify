@@ -55,12 +55,9 @@ export default async function create_meal(
     user_diets.forEach((diet) => {
       dietString += "&diet=" + diet.Diet;
     });
-    let full_api_url = `${apiEndpoint}?apiKey=${apiKey}&sort=random&number=1${dietString}`;
-    if (intolerancesString) {
-      full_api_url += `&intolerances=${intolerancesString}`;
-    }
-    console.log(full_api_url);
-    const response = await fetch(full_api_url, { cache: "no-store" });
+
+    let full_api_url = `${apiEndpoint}?apiKey=${apiKey}&sort=random&sort=healthiness&intolerances=${intolerancesString}${dietString}&number=1`;
+    const response = await fetch(full_api_url);
 
     if (!response.ok) {
       console.log("Error fetching recipe!");
@@ -69,7 +66,6 @@ export default async function create_meal(
     }
 
     let responseData = await response.json();
-    console.log(responseData);
     Weekly_Recipe = {
       week: week || getCurrentWeekNumber(),
       year: year || new Date().getFullYear(),
