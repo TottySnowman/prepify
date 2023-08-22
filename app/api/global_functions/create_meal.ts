@@ -57,7 +57,7 @@ export default async function create_meal(
     });
 
     let full_api_url = `${apiEndpoint}?apiKey=${apiKey}&sort=random&sort=healthiness&intolerances=${intolerancesString}${dietString}&number=1`;
-    const response = await fetch(full_api_url);
+    const response = await fetch(full_api_url, { cache: "no-store" });
 
     if (!response.ok) {
       console.log("Error fetching recipe!");
