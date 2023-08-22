@@ -31,6 +31,7 @@ const Nav = () => {
     }
   }
   return (
+<<<<<<< Updated upstream
     <>
       <nav className="navbar mb-16 pt-3 min-h-fit">
         <div className="navbar-start">
@@ -92,6 +93,42 @@ const Nav = () => {
                   onClick={() => openLoginPanel()}
                 >
                   Sign in now!
+=======
+    <nav className="navbar mb-16 pt-3">
+      <div className="navbar-start">
+        <Link href="/" className="flex gap-2 flex-center items-center">
+          <Image
+            src="/assets/images/Prepify_logo.png"
+            alt="Prepify Logo"
+            width={50}
+            height={50}
+          />
+          <p>Prepify</p>
+        </Link>
+      </div>
+      <div className="navbar-center"></div>
+      <div className="navbar-end sm:flex hidden p-5">
+        {session?.user ? (
+          <div className="dropdown dropdown-hover">
+            <Link href="/profile">
+              <div className="flex gap-3 md:gap-5">
+                {session?.user.username}
+                <Image
+                  src={session?.user.image as string}
+                  width={30}
+                  height={30}
+                  alt="ProfilePicture"
+                />
+              </div>
+            </Link>
+            <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li>
+                <Link href="/profile">Your Profile</Link>
+              </li>
+              <li>
+                <button className="" onClick={() => signOut()}>
+                  Log out
+>>>>>>> Stashed changes
                 </button>
               ) : (
                 <></>
