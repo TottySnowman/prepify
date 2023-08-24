@@ -103,7 +103,7 @@ export const GET = async (request: NextRequest, { params }: getMeal_props) => {
   }
 
   const recipe_json = await recipe_request.json();
-  const recipe_steps = recipe_json.analyzedInstructions[0].steps;
+  const recipe_steps: meal_step[] = recipe_json.analyzedInstructions[0].steps;
   const recipe_servings = recipe_json.servings;
   const recipe_ingredients = recipe_json.extendedIngredients;
   const user_measure = user_info.measure?.measure as string;
@@ -113,45 +113,13 @@ export const GET = async (request: NextRequest, { params }: getMeal_props) => {
     recipe_servings,
     user_info.servings
   );
-  let instructions: meal_step[] = [];
 
-  /*   recipe_ingredients.forEach((ingredient: spoon_meal_ingredient) => {
-    let parsed_ingredient: meal_ingredient = {
-      id: ingredient.id,
-      name: ingredient.name,
-      measure: {
-        amount: 0,
-        unitLong: "",
-        unitshort: "",
-      },
-    };
-
-    if (user_measure in ingredient.measures) {
-      let selected_measure = ingredient.measures[user_measure];
-      parsed_ingredient.measure = {
-        amount: ((selected_measure.amount / recipe_servings) *
-          user_info.servings) as number,
-        unitshort: selected_measure.unitshort,
-        unitLong: selected_measure.unitLong,
-      };
-    } else {
-      //take metric as standard
-      const selected_measure = ingredient.measures["metric"];
-      parsed_ingredient.measure = {
-        amount: ((selected_measure.amount / recipe_servings) *
-          user_info.servings) as number,
-        unitshort: selected_measure.unitshort,
-        unitLong: selected_measure.unitLong,
-      };
-    }
-    ingredient_list.push(parsed_ingredient);
-  }); */
   const step_by_step_response: step_by_step_guide_response = {
     title: recipe_json.title,
     ready_in_minutes: recipe_json.readyInMinutes,
     display_image: recipe_json.image,
     ingredient_list: ingredient_list,
-    step: instructions,
+    step: recipe_steps,
   };
   return new Response(JSON.stringify(step_by_step_response), { status: 200 });
   /* recipe_steps.forEach((step: meal_step) => {
