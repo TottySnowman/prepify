@@ -21,7 +21,6 @@ export const GET = async (request: NextRequest) => {
 
   const currentWeekNumber = getCurrentWeekNumber();
   const currentYear = new Date().getFullYear();
-  console.log(currentWeekNumber);
   const user_info = await prisma.users.findMany();
   const all_userIDs: number[] = user_info.map((user) => user.ID);
 
