@@ -3,45 +3,14 @@ import prisma from "@/app/api/db_client";
 import create_meal from "@/app/api/global_functions/create_meal";
 import getCurrentWeekNumber from "@/app/api/global_functions/current_calendar_week";
 import getIngredientList from "./get_ingredients";
+import { meal_ingredient, meal_step } from "@/app/global_types/meal";
 type getMeal_props = {
   params: {
     id: string;
   };
 };
-type meal_needings = {
-  id: number;
-  name: string;
-  image: string;
-};
-type meal_step_length = {
-  number: number;
-  unit: string;
-};
-type meal_step = {
-  number: number;
-  step: string;
-  ingredients: meal_needings[];
-  equipment: meal_needings[];
-  length: meal_step_length;
-};
-type meal_ingredient = {
-  id: number;
-  name: string;
-  measure: {
-    amount: number;
-    unitLong: string;
-    unitshort: string;
-  };
-};
 
 type step_by_step_guide_response = {
-  //Titel vom Gericht
-  //Ready in minutes
-  //Image
-  //Zutaten ausgerechnet mit den Servings amount / given servings * user_servings
-  //Name der Zutat, amount, ob gramm etc
-  //Servings
-  //Steps(meal_step)
   title: string;
   ready_in_minutes: number;
   display_image: string;
@@ -122,12 +91,4 @@ export const GET = async (request: NextRequest, { params }: getMeal_props) => {
     step: recipe_steps,
   };
   return new Response(JSON.stringify(step_by_step_response), { status: 200 });
-  /* recipe_steps.forEach((step: meal_step) => {
-    console.log("Step nummer:", step.number);
-
-    step.ingredients.forEach((ingredient) => {
-      console.log(ingredient.name);
-      console.log(ingredient);
-    });
-  }); */
 };

@@ -1,27 +1,8 @@
-type meal_ingredient = {
-  id: number;
-  name: string;
-  measure: {
-    amount: number;
-    unitLong: string;
-    unitshort: string;
-  };
-};
-type spoon_meal_ingredient = meal_ingredient & {
-  aisle: string;
-  consistency: string;
-  original: string;
-  nameClean: string;
-  amount: number;
-  meta: string;
-  measures: {
-    [key: string]: {
-      amount: number;
-      unitLong: string;
-      unitshort: string;
-    };
-  };
-};
+import {
+  meal_ingredient,
+  spoon_meal_ingredient,
+} from "@/app/global_types/meal";
+
 export default function getIngredientList(
   spoon_meal_ingredient: spoon_meal_ingredient[],
   user_measure: string,
