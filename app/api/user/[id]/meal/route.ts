@@ -3,20 +3,17 @@ import prisma from "@/app/api/db_client";
 import create_meal from "@/app/api/global_functions/create_meal";
 import getCurrentWeekNumber from "@/app/api/global_functions/current_calendar_week";
 import getIngredientList from "./get_ingredients";
-import { meal_ingredient, meal_step } from "@/app/global_types/meal";
+import {
+  meal_ingredient,
+  meal_step,
+  step_by_step_guide_response,
+} from "@/app/global_types/meal";
 type getMeal_props = {
   params: {
     id: string;
   };
 };
 
-type step_by_step_guide_response = {
-  title: string;
-  ready_in_minutes: number;
-  display_image: string;
-  ingredient_list: meal_ingredient[];
-  step: meal_step[];
-};
 export const GET = async (request: NextRequest, { params }: getMeal_props) => {
   let userID;
   try {

@@ -40,3 +40,11 @@ export type meal_step = {
   equipment: meal_needings[];
   length?: meal_step_length;
 };
+
+export type step_by_step_guide_response = {
+  title: string;
+  ready_in_minutes: number;
+  display_image: string;
+  ingredient_list: meal_ingredient[];
+  step: meal_step[];
+};
