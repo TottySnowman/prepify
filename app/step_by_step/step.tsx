@@ -15,14 +15,14 @@ export default function Step(meal_step: meal_step) {
         <div className="grid grid-cols-5">
           {meal_step.ingredients.map((ingredient) => (
             <div>
-              <span className="w-1/2">ingredient.name</span>
+              <span className="w-1/2">{ingredient.name}</span>
               <span className="w-1/2">
-                <Image
+                {/* <Image
                   src={ingredient.image}
                   alt="Picture of {ingredient.name}"
                   width={200}
                   height={200}
-                ></Image>
+                ></Image> */}
               </span>
             </div>
           ))}
@@ -31,7 +31,13 @@ export default function Step(meal_step: meal_step) {
         <span>No ingredients needed for this step!</span>
       )}
       <p>Detailed description: {meal_step.step}</p>
-      {meal_step.length ? (<p>This step takes {meal_step.length.number} {meal_step.length.unit}</p>) : (<></>)}
+      {meal_step.length ? (
+        <p>
+          This step takes {meal_step.length.number} {meal_step.length.unit}
+        </p>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
