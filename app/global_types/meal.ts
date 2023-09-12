@@ -4,7 +4,7 @@ export type meal_ingredient = {
   measure: {
     amount: number;
     unitLong: string;
-    unitshort: string;
+    unitshort?: string;
   };
 };
 
@@ -28,6 +28,7 @@ export type meal_needings = {
   id: number;
   name: string;
   image: string;
+  localizedName?: string;
 };
 export type meal_step_length = {
   number: number;
