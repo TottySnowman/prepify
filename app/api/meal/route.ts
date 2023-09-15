@@ -1,4 +1,4 @@
-import prisma from "../db_client";
+import { prismaClient } from "../db_client";
 import { NextRequest } from "next/server";
 import jwt, { Secret } from "jsonwebtoken";
 import { headers } from "next/headers";
@@ -21,10 +21,10 @@ export const GET = async (request: NextRequest) => {
 
   const currentWeekNumber = getCurrentWeekNumber();
   const currentYear = new Date().getFullYear();
-  const user_info = await prisma.users.findMany();
+  const user_info = await prismaClient.users.findMany();
   const all_userIDs: number[] = user_info.map((user) => user.ID);
 
-  const not_needed_users = await prisma.weekly_Recipe.findMany({
+  const not_needed_users = await prismaClient.weekly_Recipe.findMany({
     where: {
       id_user: {
         in: all_userIDs,

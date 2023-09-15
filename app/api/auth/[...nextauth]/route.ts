@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
-import prisma from "../../db_client";
+import { prismaClient } from "../../db_client";
 
 const handler = NextAuth({
   providers: [
@@ -16,7 +16,7 @@ const handler = NextAuth({
   ],
   callbacks: {
     async session({ session }) {
-      const sessionUser = await prisma.users.findUnique({
+      const sessionUser = await prismaClient.users.findUnique({
         where: {
           email: session.user?.email?.toString(),
         },
@@ -26,18 +26,18 @@ const handler = NextAuth({
         session.user.id = sessionUser?.ID;
         session.user.username = sessionUser.username;
       }
-      await prisma.$disconnect();
+      await prismaClient.$disconnect();
       return session;
     },
     async signIn({ user, profile }) {
-      const userExists = await prisma.users.findUnique({
+      const userExists = await prismaClient.users.findUnique({
         where: {
           email: profile?.email,
         },
       });
       if (!userExists && profile) {
         const username = profile.name as string;
-        await prisma.users.create({
+        await prismaClient.users.create({
           data: {
             email: profile.email as string,
             username: username.replace(" ", "").toLowerCase(),
@@ -45,8 +45,6 @@ const handler = NextAuth({
             servings: 5,
           },
         });
-
-        await prisma.$disconnect();
       }
       return true;
     },

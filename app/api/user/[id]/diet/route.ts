@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import prisma from "../../../db_client";
+import { prismaClient } from "../../../db_client";
 type user_diet = {
   params: {
     id: string;
@@ -18,8 +18,8 @@ export const GET = async (request: NextRequest, { params }: user_diet) => {
   if (!id) {
     return new Response("Failed to login!", { status: 502 });
   }
-  const all_diets = await prisma.diet.findMany();
-  const userDiets = await prisma.user_Diet.findMany({
+  const all_diets = await prismaClient.diet.findMany();
+  const userDiets = await prismaClient.user_Diet.findMany({
     where: {
       id_user: userID,
     },

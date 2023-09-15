@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import prisma from "../../../db_client";
+import { prismaClient } from "../../../db_client";
 
 type userAllergies = {
   params: {
@@ -23,10 +23,10 @@ export const GET = async (request: NextRequest, { params }: userAllergies) => {
   if (!id) {
     return new Response("Failed to login!", { status: 502 });
   }
-  let all_allergies = await prisma.allergens.findMany();
+  let all_allergies = await prismaClient.allergens.findMany();
   try {
     const parsedUserID = parseInt(id);
-    const userAllergies = await prisma.user_Allergies.findMany({
+    const userAllergies = await prismaClient.user_Allergies.findMany({
       where: {
         id_user: parsedUserID,
       },
@@ -65,9 +65,9 @@ export const POST = async (
     return new Response(JSON.stringify("Failed to login!"), { status: 502 });
   }
   const { selected_allergies } = await request.json();
-  const all_allergies = await prisma.allergens.findMany();
+  const all_allergies = await prismaClient.allergens.findMany();
   console.log(selected_allergies);
-  const userAllergies = await prisma.user_Allergies.findMany({
+  const userAllergies = await prismaClient.user_Allergies.findMany({
     where: {
       id_user: user_id,
     },
@@ -93,11 +93,11 @@ export const POST = async (
   }
 
   try {
-    await prisma.user_Allergies.createMany({
+    await prismaClient.user_Allergies.createMany({
       data: db_updated_allergies,
     });
     deleted_allergies.forEach(async (allergy) => {
-      await prisma.user_Allergies.deleteMany({
+      await prismaClient.user_Allergies.deleteMany({
         where: {
           id_user: user_id,
           id_allergy: allergy.id_allergy,

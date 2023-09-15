@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import prisma from "@/app/api/db_client";
+import { prismaClient } from "@/app/api/db_client";
 import create_meal from "@/app/api/global_functions/create_meal";
 import getCurrentWeekNumber from "@/app/api/global_functions/current_calendar_week";
 import getIngredientList from "./get_ingredients";
@@ -22,7 +22,7 @@ export const GET = async (request: NextRequest, { params }: getMeal_props) => {
     return new Response(JSON.stringify("Failed to login!"), { status: 403 });
   }
 
-  let weekly_meal = await prisma.weekly_Recipe.findUnique({
+  let weekly_meal = await prismaClient.weekly_Recipe.findUnique({
     where: {
       week_year_id_user: {
         week: getCurrentWeekNumber(),
@@ -56,7 +56,7 @@ export const GET = async (request: NextRequest, { params }: getMeal_props) => {
     );
   }
 
-  const user_info = await prisma.users.findUnique({
+  const user_info = await prismaClient.users.findUnique({
     where: {
       ID: userID,
     },

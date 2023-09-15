@@ -1,4 +1,4 @@
-import prisma from "../db_client";
+import { prismaClient } from "../db_client";
 import getCurrentWeekNumber from "../global_functions/current_calendar_week";
 type Weekly_Recipe = {
   week: number;
@@ -12,7 +12,7 @@ export default async function create_meal(
   week?: number,
   year?: number
 ) {
-  const allergies = await prisma.user_Allergies.findMany({
+  const allergies = await prismaClient.user_Allergies.findMany({
     where: {
       id_user: {
         in: all_user_id,
@@ -22,7 +22,7 @@ export default async function create_meal(
       Allergens: true,
     },
   });
-  const diets = await prisma.user_Diet.findMany({
+  const diets = await prismaClient.user_Diet.findMany({
     where: {
       id_user: {
         in: all_user_id,
@@ -76,7 +76,7 @@ export default async function create_meal(
     all_user_recipes.push(Weekly_Recipe);
   }
 
-  const db_update = await prisma.weekly_Recipe.createMany({
+  const db_update = await prismaClient.weekly_Recipe.createMany({
     data: all_user_recipes,
   });
 

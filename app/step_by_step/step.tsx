@@ -8,22 +8,17 @@ import Image from "next/image";
 
 export default function Step(meal_step: meal_step) {
   return (
-    <div>
-      <h2>Step Number: {meal_step.number}</h2>
-      <h3>Ingredients needed for this step</h3>
+    <div className="mb-4 border border-solid border-slate-400 bg-gray-500 p-2 rounded-lg prose-4">
+      <h2 className="bg-green-600 text-lg border-solid p-3 rounded-full inline-block">
+        {meal_step.number}
+      </h2>
+
+      <h3 className="text-xl">Ingredients needed for this step</h3>
       {meal_step.ingredients ? (
-        <div className="grid grid-cols-5">
+        <div className="grid grid-cols-12">
           {meal_step.ingredients.map((ingredient) => (
             <div>
               <span className="w-1/2">{ingredient.name}</span>
-              <span className="w-1/2">
-                {/* <Image
-                  src={ingredient.image}
-                  alt="Picture of {ingredient.name}"
-                  width={200}
-                  height={200}
-                ></Image> */}
-              </span>
             </div>
           ))}
         </div>

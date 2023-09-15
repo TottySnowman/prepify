@@ -258,18 +258,25 @@ export default class Step_by_Step extends React.Component<
   render() {
     return (
       <div className="container mx-auto">
-        <div className="text-center prose p-4">
-          <h2>This weeks recipe is: {this.state.title}</h2>
+        <div className="text-center p-4">
+          <span className="prose">
+            <h2 className="mb-2 text-3xl">
+              This weeks recipe is: {this.state.title}
+            </h2>
+          </span>
+
           <span className="flex justify-center">
             <Image
               alt="Meal Preview"
               src={this.state.display_image}
               width={400}
               height={400}
+              className="rounded-lg"
             ></Image>
           </span>
         </div>
-        <div className="flex flex-col mb-3">
+        <h3 className="text-xl">Instructions</h3>
+        <div className="flex flex-col">
           {this.state.step.map((singleStep) => (
             <Step
               number={singleStep.number}
