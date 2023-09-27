@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import LoginPanel from "./LoginPanel";
+import { FaTimes, FaBars } from "react-icons/fa";
 import {
   signOut,
   useSession,
@@ -11,6 +12,7 @@ import {
 import { useEffect, useState, useRef } from "react";
 const Nav = () => {
   const { data: session } = useSession();
+  const [openMenu, setOpenMenu] = useState<boolean>(false);
   const loginDialog = useRef<HTMLDialogElement | null>(null);
   const [provider, setProvider] = useState<Record<
     string,
@@ -43,7 +45,7 @@ const Nav = () => {
             <p>Prepify</p>
           </Link>
         </div>
-        <div className="navbar-center">
+        <div className="hidden md:block navbar-center">
           <div className="flex space-x-4">
             <Link href="/weekly_recipe">
               <p>Weekly Recipe</p>
@@ -55,6 +57,32 @@ const Nav = () => {
               <p>Setup Notion</p>
             </Link>
           </div>
+        </div>
+
+        <div className="-mr2 flex md:hidden">
+          <button
+            type="button"
+            onClick={() => setOpenMenu(!openMenu)}
+            className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+          >
+            {openMenu === true ? <FaTimes /> : <FaBars />}
+          </button>
+
+          {openMenu ? (
+            <div className="md:hidden">
+              <div className="ox-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <Link href="/weekly_recipe">
+                  <p>Weekly Recipe</p>
+                </Link>
+                <Link href="/step_by_step">
+                  <p>Guide</p>
+                </Link>
+                <Link href="/notion_setup">
+                  <p>Setup Notion</p>
+                </Link>
+              </div>
+            </div>
+          ) : null}
         </div>
         <div className="navbar-end sm:flex hidden p-5">
           {session?.user ? (

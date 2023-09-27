@@ -13,10 +13,10 @@ export const GET = async (request: NextRequest, { params }: user_diet) => {
   try {
     userID = parseInt(id);
   } catch (error) {
-    return new Response("Failed to login!", { status: 502 });
+    return new Response("Failed to login!", { status: 401 });
   }
   if (!id) {
-    return new Response("Failed to login!", { status: 502 });
+    return new Response("Failed to login!", { status: 401 });
   }
   const all_diets = await prismaClient.diet.findMany();
   const userDiets = await prismaClient.user_Diet.findMany({
