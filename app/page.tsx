@@ -1,15 +1,14 @@
 "use client";
 
 import { getSession } from "next-auth/react";
-
 export default function Home() {
   async function handleUserClick() {
+    const response = await fetch(`/api/notion`);
+    if (response.ok) {
+      console.log(await response.json());
+    }
     const session = await getSession();
     if (session?.user) {
-      const response = await fetch(`/api/user/${session.user.id}/meal`);
-      if (response.ok) {
-        console.log(await response.json());
-      }
     }
   }
   return (
