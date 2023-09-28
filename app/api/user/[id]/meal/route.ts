@@ -33,8 +33,13 @@ export const GET = async (request: NextRequest, { params }: getMeal_props) => {
   });
 
   if (!weekly_meal) {
-    const userArr: number[] = [userID];
-    const created_meal = await create_meal(userArr);
+    const user = await prismaClient.users.findUnique({
+      where: {
+        ID: userID,
+      },
+    });
+    if (!user) return;
+    const created_meal = await create_meal([user]);
     if (!created_meal) {
       return new Response(
         JSON.stringify("Failed to create a meal! Try again!"),

@@ -4,6 +4,7 @@ import jwt, { Secret } from "jsonwebtoken";
 import { headers } from "next/headers";
 import getCurrentWeekNumber from "../global_functions/current_calendar_week";
 import create_meal from "@/app/api/global_functions/create_meal";
+import { users } from "@prisma/client";
 
 export const GET = async (request: NextRequest) => {
   const headerList = headers();
@@ -48,9 +49,15 @@ export const GET = async (request: NextRequest) => {
       status: 200,
     });
   }
+  let needed_full_users: users[] = [];
+
+  needed_users.forEach((userID) => {
+    const user = user_info.find((user) => user.ID === userID);
+    if (user) needed_full_users.push(user);
+  });
 
   const all_user_recipes = await create_meal(
-    needed_users,
+    needed_full_users,
     currentWeekNumber,
     currentYear
   );
