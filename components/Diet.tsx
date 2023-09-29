@@ -33,11 +33,13 @@ const Diet = () => {
       {AllDiets ? (
         <>
           <div>
+            <h2>All selected diets:</h2>
+            <br />
             {SelectedDiet?.map((diet) => (
               <span>{diet.diet}</span>
             ))}
           </div>
-          All available diets:
+          <h2>All available diets:</h2>
           <select className="select select-primary w-full max-w-xs">
             <option key={"0"}>Select Diet</option>
             {AllDiets?.map((diet) => (

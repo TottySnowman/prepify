@@ -7,6 +7,18 @@ type user_diet = {
   };
 };
 
+type updatedUserDiets = {
+  params: {
+    id: string;
+    selected_diets: string[];
+  };
+};
+
+type diet = {
+  ID: number;
+  diet: string;
+};
+
 export const GET = async (request: NextRequest, { params }: user_diet) => {
   const id = params.id;
   let userID;
@@ -38,4 +50,29 @@ export const GET = async (request: NextRequest, { params }: user_diet) => {
     All_Diets: notSelectedDiets,
   };
   return new Response(JSON.stringify(response), { status: 200 });
+};
+
+export const POST = async (
+  request: NextRequest,
+  { params }: updatedUserDiets
+) => {
+  try {
+    const userID: number = parseInt(params.id);
+  } catch (error) {
+    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
+  }
+
+  const { selected_diets } = await request.json();
+
+  const allDiets = await prismaClient.diets.findMany();
+  const userDiets = await prismaClient.user_Diet.findMany({
+    where: {
+      id_user: userID,
+    },
+  });
+
+  const oldSelectedDiets: number[] = userDiets.map((diet) => diet.ID);
+  const newSelectedDiets: number[] = selected_diets.map(
+    (diet: diet) => diet.ID
+  );
 };

@@ -62,11 +62,11 @@ export const POST = async (
   try {
     user_id = parseInt(params.id);
   } catch (error) {
-    return new Response(JSON.stringify("Failed to login!"), { status: 502 });
+    return new Response(JSON.stringify("Failed to login!"), { status: 401 });
   }
   const { selected_allergies } = await request.json();
   const all_allergies = await prismaClient.allergens.findMany();
-  console.log(selected_allergies);
+
   const userAllergies = await prismaClient.user_Allergies.findMany({
     where: {
       id_user: user_id,

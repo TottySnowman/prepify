@@ -35,10 +35,6 @@ export async function update_ingredientlist(params: notion_import_params) {
           type: "page_id",
           page_id: allPages.results[0].id,
         },
-        icon: {
-          type: "emoji",
-          emoji: "🥗",
-        },
         properties: {
           Name: {
             title: [
