@@ -223,9 +223,7 @@ const Nav = () => {
                   >
                     Sign in now!
                   </button>
-                ) : (
-                  <></>
-                )}
+                ) : null}
               </div>
             )}
           </div>
@@ -250,17 +248,58 @@ const Nav = () => {
               className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li>
-                <a className="justify-between">
-                  Profile
-                  <span className="badge">New</span>
-                </a>
+                <Link href="/weekly_recipe">
+                  <p>Weekly Recipe</p>
+                </Link>
               </li>
               <li>
-                <a>Settings</a>
+                <Link href="/step_by_step">
+                  <p>Guide</p>
+                </Link>
               </li>
-              <li>
-                <a>Logout</a>
+              <li className="mb-5">
+                <Link href="/notion_setup">
+                  <p>Setup Notion</p>
+                </Link>
               </li>
+
+              {session?.user ? (
+                <>
+                  <li>
+                    <Link href="/profile">
+                      <div className="justify-between">
+                        <p>Your Profile</p>
+                        <Image
+                          src={session?.user.image as string}
+                          width={40}
+                          height={40}
+                          alt="ProfilePicture"
+                          className="rounded-full"
+                        />
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <button className="" onClick={() => signOut()}>
+                      Log out
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    {provider ? (
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => openLoginPanel()}
+                      >
+                        Sign in now!
+                      </button>
+                    ) : null}
+                  </li>
+                </>
+              )}
             </ul>
           ) : null}
         </div>
