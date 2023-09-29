@@ -62,7 +62,7 @@ export default async function create_meal(
       dietString += "&diet=" + diet.Diet;
     });
 
-    let full_api_url = `${apiEndpoint}?apiKey=${apiKey}&sort=random&sort=healthiness&intolerances=${intolerancesString}${dietString}&number=1&instructionsRequired=true&addRecipeInformation=true`;
+    let full_api_url = `${apiEndpoint}?apiKey=${apiKey}&sort=random&sort=healthiness&intolerances=${intolerancesString}${dietString}&number=1&instructionsRequired=true&addRecipeInformation=true&type=main%20course`;
     const response = await fetch(full_api_url, { cache: "no-store" });
 
     if (!response.ok) {

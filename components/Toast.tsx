@@ -8,7 +8,6 @@ type toastProps = {
 const Toast = ({ toastMessage, visible, ParentVisible }: toastProps) => {
   const [ToastVisible, setToastVisible] = useState("invisible");
   useEffect(() => {
-    console.log(visible);
     if (visible) {
       setToastVisible("visible");
       setTimeout(() => {

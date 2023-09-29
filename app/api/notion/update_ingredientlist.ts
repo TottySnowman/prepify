@@ -14,18 +14,59 @@ export async function update_ingredientlist(params: notion_import_params) {
       property: "object",
     },
   });
+  let pageID;
   if (pageSearch.results.length === 0) {
-    //TODO Error handling, Page doesn't exist / Maybe create a new Page with the name "Prepify Shoppinglist"
-    return;
+    const allPages = await notion_client.search({
+      filter: {
+        value: "page",
+        property: "object",
+      },
+    });
+
+    if (allPages.results.length === 0) {
+      //TODO Message, No pages were found
+      return;
+    }
+
+    //Creates new Page
+    try {
+      const newPage = await notion_client.pages.create({
+        parent: {
+          type: "page_id",
+          page_id: allPages.results[0].id,
+        },
+        icon: {
+          type: "emoji",
+          emoji: "🥗",
+        },
+        properties: {
+          Name: {
+            title: [
+              {
+                text: {
+                  content: "Prepify Shoppinglist",
+                },
+              },
+            ],
+          },
+        },
+      });
+    } catch (error) {
+      //TODO Message, Failed to create Page
+      return;
+    }
+
+    //Sets new Page
+    pageID = newPage.id;
+  } else {
+    pageID = pageSearch.results[0].id;
   }
 
-  const pageID = pageSearch.results[0].id;
   const pageContent = await notion_client.blocks.children.list({
     block_id: pageID,
   });
 
   //Delete Page content
-
   await Promise.all(
     pageContent.results.map(async (block) => {
       try {
