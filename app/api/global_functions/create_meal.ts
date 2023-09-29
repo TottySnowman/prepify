@@ -40,8 +40,9 @@ export default async function create_meal(
 
   const apiKey = process.env.SPOONACULAR_API_KEY;
   const apiEndpoint = "https://api.spoonacular.com/recipes/complexSearch";
+  //api.spoonacular.com/recipes/${weekly_meal.id_recipe}/information?apiKey=${process.env.SPOONACULAR_API_KEY}
 
-  let all_user_recipes: Weekly_Recipe[] = [];
+  https: let all_user_recipes: Weekly_Recipe[] = [];
 
   for (const user of all_user) {
     const user_allergies = allergies.filter(
@@ -82,11 +83,31 @@ export default async function create_meal(
 
     if (!user.notion_api_key) return;
 
+    const recipe_info = await fetch(
+      `https://api.spoonacular.com/recipes/${responseData.results[0].id}/information?apiKey=${process.env.SPOONACULAR_API_KEY}`
+    );
+    if (!recipe_info.ok) {
+      //TODO Error handling
+      return;
+    }
+
+    const recipe_info_json = await recipe_info.json();
+    const recipe_servings = recipe_info_json.servings;
+    const recipe_ingredients = recipe_info_json.extendedIngredients;
+    const user_measure = user.measure?.measure as string;
+    let ingredient_list: meal_ingredient[] = getIngredientList(
+      recipe_ingredients,
+      user_measure,
+      recipe_servings,
+      user.servings
+    );
+
     update_ingredientlist({
       notion_secret: user.notion_api_key,
       meal_title: responseData.results[0].title,
       //TODO Add ingredients, maybe need to call api again to get recipe information easier...
-      ingredient_list: [],
+
+      ingredient_list: ingredient_list,
     });
   }
 
