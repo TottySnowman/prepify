@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { prismaClient } from "@/app/api/db_client";
 import create_meal from "@/app/api/global_functions/create_meal";
 import getCurrentWeekNumber from "@/app/api/global_functions/current_calendar_week";
-import getIngredientList from "./get_ingredients";
+import { getIngredientList } from "@/app/api/global_functions/get_ingredients";
 import {
   meal_ingredient,
   meal_step,

@@ -2,6 +2,7 @@ import { prismaClient } from "../db_client";
 import getCurrentWeekNumber from "../global_functions/current_calendar_week";
 import { update_ingredientlist } from "@/app/api/notion/update_ingredientlist";
 import { users } from "@prisma/client";
+import { getIngredientList } from "../global_functions/get_ingredients";
 
 type Weekly_Recipe = {
   week: number;
@@ -40,7 +41,6 @@ export default async function create_meal(
 
   const apiKey = process.env.SPOONACULAR_API_KEY;
   const apiEndpoint = "https://api.spoonacular.com/recipes/complexSearch";
-  //api.spoonacular.com/recipes/${weekly_meal.id_recipe}/information?apiKey=${process.env.SPOONACULAR_API_KEY}
 
   https: let all_user_recipes: Weekly_Recipe[] = [];
 
@@ -105,8 +105,6 @@ export default async function create_meal(
     update_ingredientlist({
       notion_secret: user.notion_api_key,
       meal_title: responseData.results[0].title,
-      //TODO Add ingredients, maybe need to call api again to get recipe information easier...
-
       ingredient_list: ingredient_list,
     });
   }

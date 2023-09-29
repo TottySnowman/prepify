@@ -3,7 +3,7 @@ import {
   spoon_meal_ingredient,
 } from "@/app/global_types/meal";
 
-export default function getIngredientList(
+export function getIngredientList(
   spoon_meal_ingredient: spoon_meal_ingredient[],
   user_measure: string,
   recipe_servings: number,
