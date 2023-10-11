@@ -1,3 +1,5 @@
+import { measure, users } from "@prisma/client";
+
 export type meal_ingredient = {
   id: number;
   name: string;
@@ -48,4 +50,8 @@ export type step_by_step_guide_response = {
   display_image: string;
   ingredient_list: meal_ingredient[];
   step: meal_step[];
+};
+
+export type user_with_measure = users & {
+  measure: measure | null;
 };

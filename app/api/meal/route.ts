@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import getCurrentWeekNumber from "../global_functions/current_calendar_week";
 import create_meal from "@/app/api/global_functions/create_meal";
 import { users } from "@prisma/client";
+import { user_with_measure } from "@/app/global_types/meal";
 
 export const GET = async (request: NextRequest) => {
   const headerList = headers();
@@ -22,7 +23,11 @@ export const GET = async (request: NextRequest) => {
 
   const currentWeekNumber = getCurrentWeekNumber();
   const currentYear = new Date().getFullYear();
-  const user_info = await prismaClient.users.findMany();
+  const user_info = await prismaClient.users.findMany({
+    include: {
+      measure: true,
+    },
+  });
   const all_userIDs: number[] = user_info.map((user) => user.ID);
 
   const not_needed_users = await prismaClient.weekly_Recipe.findMany({
@@ -49,7 +54,7 @@ export const GET = async (request: NextRequest) => {
       status: 200,
     });
   }
-  let needed_full_users: users[] = [];
+  let needed_full_users: user_with_measure[] = [];
 
   needed_users.forEach((userID) => {
     const user = user_info.find((user) => user.ID === userID);

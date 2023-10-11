@@ -1,8 +1,9 @@
 import { prismaClient } from "../db_client";
 import getCurrentWeekNumber from "../global_functions/current_calendar_week";
 import { update_ingredientlist } from "@/app/api/notion/update_ingredientlist";
-import { users } from "@prisma/client";
+import { users, measure } from "@prisma/client";
 import { getIngredientList } from "../global_functions/get_ingredients";
+import { meal_ingredient, user_with_measure } from "@/app/global_types/meal";
 
 type Weekly_Recipe = {
   week: number;
@@ -11,8 +12,9 @@ type Weekly_Recipe = {
   recipe_name: string;
   id_user: number;
 };
+
 export default async function create_meal(
-  all_user: users[],
+  all_user: user_with_measure[],
   week?: number,
   year?: number
 ) {
@@ -42,7 +44,7 @@ export default async function create_meal(
   const apiKey = process.env.SPOONACULAR_API_KEY;
   const apiEndpoint = "https://api.spoonacular.com/recipes/complexSearch";
 
-  https: let all_user_recipes: Weekly_Recipe[] = [];
+  let all_user_recipes: Weekly_Recipe[] = [];
 
   for (const user of all_user) {
     const user_allergies = allergies.filter(
@@ -68,7 +70,7 @@ export default async function create_meal(
     if (!response.ok) {
       console.log("Error fetching recipe!");
       console.log(full_api_url);
-      return;
+      break;
     }
 
     let responseData = await response.json();
@@ -81,14 +83,14 @@ export default async function create_meal(
     };
     all_user_recipes.push(Weekly_Recipe);
 
-    if (!user.notion_api_key) return;
+    if (!user.notion_api_key) break;
 
     const recipe_info = await fetch(
       `https://api.spoonacular.com/recipes/${responseData.results[0].id}/information?apiKey=${process.env.SPOONACULAR_API_KEY}`
     );
     if (!recipe_info.ok) {
       //TODO Error handling
-      return;
+      break;
     }
 
     const recipe_info_json = await recipe_info.json();

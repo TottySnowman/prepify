@@ -20,25 +20,21 @@ export function getIngredientList(
         unitshort: "",
       },
     };
-
+    let selected_measure;
     if (user_measure in ingredient.measures) {
-      let selected_measure = ingredient.measures[user_measure];
-      parsed_ingredient.measure = {
-        amount: ((selected_measure.amount / recipe_servings) *
-          user_servings) as number,
-        unitshort: selected_measure.unitshort,
-        unitLong: selected_measure.unitLong,
-      };
+      selected_measure = ingredient.measures[user_measure];
     } else {
       //take metric as standard
-      const selected_measure = ingredient.measures["metric"];
-      parsed_ingredient.measure = {
-        amount: ((selected_measure.amount / recipe_servings) *
-          user_servings) as number,
-        unitshort: selected_measure.unitshort,
-        unitLong: selected_measure.unitLong,
-      };
+      selected_measure = ingredient.measures["metric"];
     }
+
+    parsed_ingredient.measure = {
+      amount: parseFloat(
+        ((selected_measure.amount / recipe_servings) * user_servings).toFixed(2)
+      ),
+      unitshort: selected_measure.unitshort,
+      unitLong: selected_measure.unitLong,
+    };
     ingredient_list.push(parsed_ingredient);
   });
 

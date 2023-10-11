@@ -25,23 +25,21 @@ export default class Step_by_Step extends React.Component<
     if (!session?.user) {
       return;
     }
-    /* const step_by_step_res = await fetch(`api/user/${session.user.id}/meal`);
+    const step_by_step_res = await fetch(`api/user/${session.user.id}/meal`);
     if (step_by_step_res.ok) {
       const step_by_step_json: step_by_step_guide_response =
         await step_by_step_res.json();
       console.log(step_by_step_json);
-            this.setState({
+      this.setState({
         title: step_by_step_json.title,
         ready_in_minutes: step_by_step_json.ready_in_minutes,
         display_image: step_by_step_json.display_image,
         ingredient_list: step_by_step_json.ingredient_list,
         step: step_by_step_json.step,
-      }); 
+      });
+    }
 
-      
-    } */
-
-    this.setState({
+    /*  this.setState({
       title: "Salmon Amaranth Burgers with Radish Slaw",
       ready_in_minutes: 26,
       display_image: "https://spoonacular.com/recipeImages/1095894-556x370.jpg",
@@ -253,7 +251,7 @@ export default class Step_by_Step extends React.Component<
           },
         },
       ],
-    });
+    }); */
   }
   render() {
     return (
