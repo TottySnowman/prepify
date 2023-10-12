@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prismaClient } from "../../../db_client";
+import { allergy } from "@prisma/client";
 
 type userAllergies = {
   params: {
@@ -23,35 +24,35 @@ export const GET = async (request: NextRequest, { params }: userAllergies) => {
   if (!id) {
     return new Response("Failed to login!", { status: 502 });
   }
-  let all_allergies = await prismaClient.allergens.findMany();
+  let parsedUserID: number;
   try {
-    const parsedUserID = parseInt(id);
-    const userAllergies = await prismaClient.user_Allergies.findMany({
-      where: {
-        id_user: parsedUserID,
-      },
-      include: {
-        Allergens: true,
-      },
-    });
-    const idsToRemove = new Set(
-      userAllergies.map((allergy) => allergy.id_allergy)
-    );
-    all_allergies = all_allergies.filter(
-      (allergy) => !idsToRemove.has(allergy.ID)
-    );
-    const response = {
-      SelectedAllergies: userAllergies.map(
-        (userAllergy) => userAllergy.Allergens
-      ),
-      Allergies: all_allergies,
-    };
-    return new Response(JSON.stringify(response), { status: 200 });
+    parsedUserID = parseInt(id);
   } catch (error) {
-    return new Response(JSON.stringify("Failed to load user allergies!"), {
-      status: 501,
-    });
+    return new Response("Failed to login!", { status: 502 });
   }
+
+  let all_allergies = await prismaClient.allergens.findMany();
+  const userAllergies = await prismaClient.user_Allergies.findMany({
+    where: {
+      id_user: parsedUserID,
+    },
+    include: {
+      Allergens: true,
+    },
+  });
+  const idsToRemove = new Set(
+    userAllergies.map((allergy) => allergy.id_allergy)
+  );
+  all_allergies = all_allergies.filter(
+    (allergy) => !idsToRemove.has(allergy.ID)
+  );
+  const response = {
+    SelectedAllergies: userAllergies.map(
+      (userAllergy) => userAllergy.Allergens
+    ),
+    Allergies: all_allergies,
+  };
+  return new Response(JSON.stringify(response), { status: 200 });
 };
 
 export const POST = async (
@@ -72,11 +73,11 @@ export const POST = async (
       id_user: user_id,
     },
   });
-  const idsJson1 = selected_allergies.map((item: Typeallergy) => item.ID);
-  const idsJson2 = userAllergies.map((item) => item.id_allergy);
-  const all_allergies_id = all_allergies.map((allergy) => allergy.ID);
+  const idsJson1: number[] = selected_allergies.map((item: allergy) => item.ID);
+  const idsJson2: number[] = userAllergies.map((item) => item.id_allergy);
+  const all_allergies_id: number[] = all_allergies.map((allergy) => allergy.ID);
   const updated_allergies = selected_allergies.filter(
-    (item: Typeallergy) =>
+    (item: allergy) =>
       !idsJson2.includes(item.ID) && all_allergies_id.includes(item.ID)
   );
   const deleted_allergies = userAllergies.filter(
@@ -112,7 +113,7 @@ export const POST = async (
       }
     );
   }
-  return new Response(JSON.stringify("Successfually updated your allergies!"), {
+  return new Response(JSON.stringify("Successfully updated your allergies!"), {
     status: 200,
   });
 };

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prismaClient } from "../../../db_client";
+import { Diet, User_Diet } from "@prisma/client";
 type user_diet = {
   params: {
     id: string;
@@ -20,17 +21,18 @@ type diet = {
 };
 
 export const GET = async (request: NextRequest, { params }: user_diet) => {
-  const id = params.id;
-  let userID;
-  try {
-    userID = parseInt(id);
-  } catch (error) {
-    return new Response("Failed to login!", { status: 401 });
-  }
+  let userID: number;
   if (!id) {
     return new Response("Failed to login!", { status: 401 });
   }
-  const all_diets = await prismaClient.diet.findMany();
+
+  try {
+    userID = parseInt(params.id);
+  } catch (error) {
+    return new Response("Failed to login!", { status: 401 });
+  }
+
+  let all_diets = await prismaClient.diet.findMany();
   const userDiets = await prismaClient.user_Diet.findMany({
     where: {
       id_user: userID,
@@ -52,10 +54,7 @@ export const GET = async (request: NextRequest, { params }: user_diet) => {
   return new Response(JSON.stringify(response), { status: 200 });
 };
 
-export const POST = async (
-  request: NextRequest,
-  { params }: updatedUserDiets
-) => {
+export const POST = async (request: NextRequest, { params }: user_diet) => {
   try {
     const userID: number = parseInt(params.id);
   } catch (error) {
@@ -64,8 +63,8 @@ export const POST = async (
 
   const { selected_diets } = await request.json();
 
-  const allDiets = await prismaClient.diets.findMany();
-  const userDiets = await prismaClient.user_Diet.findMany({
+  const allDiets: diet[] = await prismaClient.diets.findMany();
+  const userDiets: diet[] = await prismaClient.user_Diet.findMany({
     where: {
       id_user: userID,
     },
@@ -75,4 +74,43 @@ export const POST = async (
   const newSelectedDiets: number[] = selected_diets.map(
     (diet: diet) => diet.ID
   );
+  const allDietId: number[] = allDiets.map((diet) => diet.ID);
+  const updatedDiets = selected_diets.filter(
+    (item: diet) =>
+      !oldSelectedDiets.includes(item.ID) && allDietId.includes(item.ID)
+  );
+
+  const deletedDiets = userDiets.filter(
+    (item: diet) =>
+      !newSelectedDiets.includes(item.ID) && allDietId.includes(item.ID)
+  );
+
+  let db_update_diet: User_Diet = [];
+
+  updatedDiets.map((updatedDietID: number) => {
+    db_update_diet.push({
+      id_user = userID,
+      id_diet = updatedDietID,
+    });
+  });
+
+  try {
+    await prismaClient.User_Diet.createMany({
+      data: db_update_diet,
+    });
+    await prismaClient.User_Diet.deleteMany({
+      where: {
+        id_user: userID,
+        id_diet: {
+          in: deletedDiets,
+        },
+      },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify("Failed to update diets! Try again!"), {
+      status: 502,
+    });
+  }
+
+  return new Response(JSON.stringify("Successfully updated your diets!"));
 };
