@@ -20,8 +20,9 @@ model Category {
 }
 
 model Cuisine {
-  ID           Int     @id @default(autoincrement())
-  cuisine_type String? @db.VarChar(255)
+  ID                Int                 @id @default(autoincrement())
+  cuisine_type      String?             @db.VarChar(255)
+  user_cuisine_type user_cuisine_type[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -45,19 +46,20 @@ model users {
   profile_picture String?          @db.LongText
   created_at      DateTime         @default(now()) @db.Timestamp(0)
   id_meal_type    Int?
-  id_measure     Int?              @default(2)
+  id_measure      Int?             @default(2)
   Weekly_Recipe   Weekly_Recipe[]
   User_Allergies  User_Allergies[]
   User_Diet       User_Diet[]
 
-  meal_type meal_type? @relation(fields: [id_meal_type], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Meal_Type")
-  measure measure? @relation(fields: [id_measure], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Measures" )
+  meal_type         meal_type?          @relation(fields: [id_meal_type], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Meal_Type")
+  measure           measure?            @relation(fields: [id_measure], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Measures")
+  user_cuisine_type user_cuisine_type[]
 }
 
-model measure{
-    ID              Int              @id @default(autoincrement())
-      measure        String           @unique @db.VarChar(6)
-        users users[]
+model measure {
+  ID      Int     @id @default(autoincrement())
+  measure String  @unique @db.VarChar(6)
+  users   users[]
 
   @@index([ID])
 }
@@ -99,12 +101,12 @@ model meal_type {
   @@index([ID])
 }
 
-model user_cuisine_type{
-  id_user Int
+model user_cuisine_type {
+  id_user    Int
   id_cuisine Int
-  
-  User users? @relation(fields: [id_user], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Cuisine_ibfk_1")
-  Cuisine Cuisine?  @relation(fields: [id_cuisine], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Cuisine_ibfk_2")
+
+  User    users?   @relation(fields: [id_user], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Cuisine_ibfk_1")
+  Cuisine Cuisine? @relation(fields: [id_cuisine], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Cuisine_ibfk_2")
 
   @@id([id_user, id_cuisine])
   @@index([id_user], map: "id_user")

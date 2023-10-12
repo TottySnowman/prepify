@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { prismaClient } from "../../../db_client";
-import { allergy } from "@prisma/client";
+import { Allergens } from "@prisma/client";
 
 type userAllergies = {
   params: {
@@ -20,15 +20,11 @@ type Typeallergy = {
   allergy: string;
 };
 export const GET = async (request: NextRequest, { params }: userAllergies) => {
-  const id = params.id;
-  if (!id) {
-    return new Response("Failed to login!", { status: 502 });
-  }
   let parsedUserID: number;
   try {
-    parsedUserID = parseInt(id);
+    parsedUserID = parseInt(params.id);
   } catch (error) {
-    return new Response("Failed to login!", { status: 502 });
+    return new Response("Unauthorized", { status: 401 });
   }
 
   let all_allergies = await prismaClient.allergens.findMany();
@@ -73,11 +69,13 @@ export const POST = async (
       id_user: user_id,
     },
   });
-  const idsJson1: number[] = selected_allergies.map((item: allergy) => item.ID);
+  const idsJson1: number[] = selected_allergies.map(
+    (item: Allergens) => item.ID
+  );
   const idsJson2: number[] = userAllergies.map((item) => item.id_allergy);
   const all_allergies_id: number[] = all_allergies.map((allergy) => allergy.ID);
   const updated_allergies = selected_allergies.filter(
-    (item: allergy) =>
+    (item: Allergens) =>
       !idsJson2.includes(item.ID) && all_allergies_id.includes(item.ID)
   );
   const deleted_allergies = userAllergies.filter(

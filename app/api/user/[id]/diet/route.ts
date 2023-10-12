@@ -51,22 +51,23 @@ export const GET = async (request: NextRequest, { params }: user_diet) => {
 };
 
 export const POST = async (request: NextRequest, { params }: user_diet) => {
+  let userID: number;
   try {
-    const userID: number = parseInt(params.id);
+    userID = parseInt(params.id);
   } catch (error) {
     return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
 
   const { selected_diets } = await request.json();
 
-  const allDiets: diet[] = await prismaClient.diets.findMany();
-  const userDiets: diet[] = await prismaClient.user_Diet.findMany({
+  const allDiets: Diet[] = await prismaClient.diet.findMany();
+  const userDiets: User_Diet[] = await prismaClient.user_Diet.findMany({
     where: {
       id_user: userID,
     },
   });
 
-  const oldSelectedDiets: number[] = userDiets.map((diet) => diet.ID);
+  const oldSelectedDiets: number[] = userDiets.map((diet) => diet.id_diet);
   const newSelectedDiets: number[] = selected_diets.map(
     (diet: diet) => diet.ID
   );
@@ -76,25 +77,24 @@ export const POST = async (request: NextRequest, { params }: user_diet) => {
       !oldSelectedDiets.includes(item.ID) && allDietId.includes(item.ID)
   );
 
-  const deletedDiets = userDiets.filter(
-    (item: diet) =>
-      !newSelectedDiets.includes(item.ID) && allDietId.includes(item.ID)
+  const deletedDiets: number[] = oldSelectedDiets.filter(
+    (item) => !newSelectedDiets.includes(item) && allDietId.includes(item)
   );
 
-  let db_update_diet: User_Diet = [];
+  let db_update_diet: User_Diet[] = [];
 
   updatedDiets.map((updatedDietID: number) => {
     db_update_diet.push({
-      id_user = userID,
-      id_diet = updatedDietID,
+      id_user: userID,
+      id_diet: updatedDietID,
     });
   });
 
   try {
-    await prismaClient.User_Diet.createMany({
+    await prismaClient.user_Diet.createMany({
       data: db_update_diet,
     });
-    await prismaClient.User_Diet.deleteMany({
+    await prismaClient.user_Diet.deleteMany({
       where: {
         id_user: userID,
         id_diet: {

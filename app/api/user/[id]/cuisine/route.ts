@@ -9,7 +9,7 @@ type cuisine_import = {
 };
 
 type user_cuisine_get_response = {
-  selectedCuisine: Cusine[];
+  selectedCuisine: (Cuisine | null)[];
   AllCuisine: Cuisine[];
 };
 
@@ -23,25 +23,23 @@ export const GET = async (request: NextRequest, { params }: cuisine_import) => {
 
   let allCuisine = await prismaClient.cuisine.findMany();
 
-  const userCuisine = await prismaClient.user_cuisine.findMany({
+  const userCuisine = await prismaClient.user_cuisine_type.findMany({
     where: {
       id_user: userID,
     },
     include: {
-      Cusine: true,
+      Cuisine: true,
     },
   });
 
-  const selectedIDs = new Set(userCuisine.map((cuisine) => cuisine.ID));
+  const selectedIDs = new Set(userCuisine.map((cuisine) => cuisine.id_cuisine));
 
   allCuisine = allCuisine.filter((cuisine) => !selectedIDs.has(cuisine.ID));
 
   const response: user_cuisine_get_response = {
-    selectedCuisine: userCuisine.map((userCuisine) => userCuisine.Cusine),
+    selectedCuisine: userCuisine.map((userCuisine) => userCuisine.Cuisine),
     AllCuisine: allCuisine,
   };
-
-  export const POST = async () => {
-    
-  }
 };
+
+export const POST = async () => {};
