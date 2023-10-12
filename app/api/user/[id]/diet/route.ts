@@ -22,10 +22,6 @@ type diet = {
 
 export const GET = async (request: NextRequest, { params }: user_diet) => {
   let userID: number;
-  if (!id) {
-    return new Response("Failed to login!", { status: 401 });
-  }
-
   try {
     userID = parseInt(params.id);
   } catch (error) {

@@ -98,3 +98,14 @@ model meal_type {
 
   @@index([ID])
 }
+
+model user_cuisine_type{
+  id_user Int
+  id_cuisine Int
+  
+  User users? @relation(fields: [id_user], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Cuisine_ibfk_1")
+  Cuisine Cuisine?  @relation(fields: [id_cuisine], references: [ID], onDelete: Restrict, onUpdate: Restrict, map: "User_Cuisine_ibfk_2")
+
+  @@id([id_user, id_cuisine])
+  @@index([id_user], map: "id_user")
+}
