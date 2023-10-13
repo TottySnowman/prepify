@@ -73,8 +73,8 @@ export const POST = async (request: NextRequest, { params }: user_diet) => {
   );
   const allDietId: number[] = allDiets.map((diet) => diet.ID);
   const updatedDiets = selected_diets.filter(
-    (item: diet) =>
-      !oldSelectedDiets.includes(item.ID) && allDietId.includes(item.ID)
+    (item: number) =>
+      !oldSelectedDiets.includes(item) && allDietId.includes(item)
   );
 
   const deletedDiets: number[] = oldSelectedDiets.filter(
@@ -108,5 +108,7 @@ export const POST = async (request: NextRequest, { params }: user_diet) => {
     });
   }
 
-  return new Response(JSON.stringify("Successfully updated your diets!"));
+  return new Response(JSON.stringify("Successfully updated your diets!"), {
+    status: 200,
+  });
 };

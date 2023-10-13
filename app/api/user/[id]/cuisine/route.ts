@@ -1,10 +1,16 @@
 import { NextRequest } from "next/server";
 import { prismaClient } from "../../../db_client";
-import { Cuisine } from "@prisma/client";
+import { Cuisine, user_cuisine_type } from "@prisma/client";
 
 type cuisine_import = {
   params: {
     id: string;
+  };
+};
+type cuisine_import_update = {
+  params: {
+    id: string;
+    excludedCuisine: Cuisine[];
   };
 };
 
@@ -42,4 +48,75 @@ export const GET = async (request: NextRequest, { params }: cuisine_import) => {
   };
 };
 
-export const POST = async () => {};
+export const POST = async (
+  request: NextRequest,
+  { params: cuisine_import_update }
+) => {
+  let userID: number;
+  try {
+    userID = parseInt(params.ID);
+  } catch (error) {
+    return new Response(JSON.stringify("Unauthorized!"), { status: 401 });
+  }
+
+  const { excludedCuisine } = await request.json();
+  const allCuisineTypes: Cuisine[] = await prismaClient.Cuisine.findMany();
+
+  const userCuisineTypes = await prismaClient.user_cuisine_type.findMany({
+    where: {
+      id_user: userID,
+    },
+    include: {
+      Cuisine: true,
+    },
+  });
+
+  const excludedCuisineID: number[] = excludedCuisine.map(
+    (cuisine) => cuisine.ID
+  );
+
+  const userCuisineID: number[] = userCuisineTypes.map((cuisine) => cuisine.ID);
+  const allCuisineID: number[] = allCuisineTypes.map((cuisine) => cuisine.ID);
+
+  const updatedCusine: Cuisine[] = excludedCuisine.filter(
+    (cuisine: Cuisine) =>
+      !userCuisineID.includes(cuisine.ID) && allCuisineID.includes(cuisine.ID)
+  );
+
+  const deletedCusine = userCuisineID.filter(
+    (cuisineID) =>
+      !excludedCuisineID.includes(cuisineID) && allCuisineID.includes(cuisineID)
+  );
+
+  let dbUpdatedCusine: user_cuisine_type[] = [];
+
+  updatedCusine.map((cuisineID) => {
+    dbUpdatedCusine.push({
+      id_user: userID,
+      id_cuisine: cuisineID,
+    });
+  });
+
+  try {
+    await prismaClient.user_cuisine_type.createMany({
+      data: dbUpdatedCusine,
+    });
+    await prismaClient.user_cuisine_type.deleteMany({
+      where: {
+        id_user: userID,
+        id_cuisine: {
+          in: deletedCusine,
+        },
+      },
+    });
+  } catch (error) {
+    return new Response(
+      JSON.stringify("Failed to update cuisine types! Try again!"),
+      { status: 502 }
+    );
+  }
+
+  return new Response(JSON.stringify("Sucessfully updated cuisine types!"), {
+    status: 200,
+  });
+};
