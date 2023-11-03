@@ -46,6 +46,8 @@ export const GET = async (request: NextRequest, { params }: cuisine_import) => {
     selectedCuisine: userCuisine.map((userCuisine) => userCuisine.Cuisine),
     AllCuisine: allCuisine,
   };
+
+  return new Response(JSON.stringify(response), { status: 200 });
 };
 
 export const POST = async (

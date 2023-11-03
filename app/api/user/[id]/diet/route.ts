@@ -104,7 +104,7 @@ export const POST = async (request: NextRequest, { params }: user_diet) => {
     });
   } catch (error) {
     return new Response(JSON.stringify("Failed to update diets! Try again!"), {
-      status: 502,
+      status: 500,
     });
   }
 

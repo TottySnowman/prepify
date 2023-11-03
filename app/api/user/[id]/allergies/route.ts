@@ -15,10 +15,6 @@ type updatedUserAllergies = {
   };
 };
 
-type Typeallergy = {
-  ID: number;
-  allergy: string;
-};
 export const GET = async (request: NextRequest, { params }: userAllergies) => {
   let parsedUserID: number;
   try {
