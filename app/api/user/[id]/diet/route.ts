@@ -71,8 +71,9 @@ export const POST = async (request: NextRequest, { params }: user_diet) => {
   const newSelectedDiets: number[] = selected_diets.map(
     (diet: diet) => diet.ID
   );
+
   const allDietId: number[] = allDiets.map((diet) => diet.ID);
-  const updatedDiets = selected_diets.filter(
+  const updatedDiets = newSelectedDiets.filter(
     (item: number) =>
       !oldSelectedDiets.includes(item) && allDietId.includes(item)
   );
@@ -80,7 +81,7 @@ export const POST = async (request: NextRequest, { params }: user_diet) => {
   const deletedDiets: number[] = oldSelectedDiets.filter(
     (item) => !newSelectedDiets.includes(item) && allDietId.includes(item)
   );
-
+  console.log(updatedDiets);
   let db_update_diet: User_Diet[] = [];
 
   updatedDiets.map((updatedDietID: number) => {
