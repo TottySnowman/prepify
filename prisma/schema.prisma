@@ -45,8 +45,9 @@ model users {
   notion_api_key  String?          @db.VarChar(255)
   profile_picture String?          @db.LongText
   created_at      DateTime         @default(now()) @db.Timestamp(0)
-  id_meal_type    Int?
+  id_meal_type    Int?             @default(3)
   id_measure      Int?             @default(2)
+  deleted         Boolean          @default(false)
   Weekly_Recipe   Weekly_Recipe[]
   User_Allergies  User_Allergies[]
   User_Diet       User_Diet[]

@@ -4,7 +4,6 @@ import jwt, { Secret } from "jsonwebtoken";
 import { headers } from "next/headers";
 import getCurrentWeekNumber from "../global_functions/current_calendar_week";
 import create_meal from "@/app/api/global_functions/create_meal";
-import { users } from "@prisma/client";
 import { user_with_measure } from "@/app/global_types/meal";
 
 export const GET = async (request: NextRequest) => {

@@ -44,8 +44,7 @@ const Nav = () => {
   });
   function openLoginPanel() {
     if (loginDialog.current) {
-      const login = loginDialog.current;
-      login.showModal();
+      loginDialog.current.showModal();
     }
   }
   return (

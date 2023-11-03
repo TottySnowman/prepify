@@ -7,9 +7,6 @@ const nextConfig = {
       "spoonacular.com",
     ],
   },
-  experimental: {
-    serverComponentsExternalPackages: ["@prisma/client"],
-  },
 };
 
 module.exports = nextConfig;

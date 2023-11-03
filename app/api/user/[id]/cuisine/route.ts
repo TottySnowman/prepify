@@ -50,17 +50,17 @@ export const GET = async (request: NextRequest, { params }: cuisine_import) => {
 
 export const POST = async (
   request: NextRequest,
-  { params: cuisine_import_update }
+  { params }: cuisine_import_update
 ) => {
   let userID: number;
   try {
-    userID = parseInt(params.ID);
+    userID = parseInt(params.id);
   } catch (error) {
     return new Response(JSON.stringify("Unauthorized!"), { status: 401 });
   }
 
   const { excludedCuisine } = await request.json();
-  const allCuisineTypes: Cuisine[] = await prismaClient.Cuisine.findMany();
+  const allCuisineTypes: Cuisine[] = await prismaClient.cuisine.findMany();
 
   const userCuisineTypes = await prismaClient.user_cuisine_type.findMany({
     where: {
@@ -72,10 +72,12 @@ export const POST = async (
   });
 
   const excludedCuisineID: number[] = excludedCuisine.map(
-    (cuisine) => cuisine.ID
+    (cuisine: Cuisine) => cuisine.ID
   );
 
-  const userCuisineID: number[] = userCuisineTypes.map((cuisine) => cuisine.ID);
+  const userCuisineID: number[] = userCuisineTypes.map(
+    (cuisine) => cuisine.id_cuisine
+  );
   const allCuisineID: number[] = allCuisineTypes.map((cuisine) => cuisine.ID);
 
   const updatedCusine: Cuisine[] = excludedCuisine.filter(
@@ -90,10 +92,10 @@ export const POST = async (
 
   let dbUpdatedCusine: user_cuisine_type[] = [];
 
-  updatedCusine.map((cuisineID) => {
+  updatedCusine.map((cuisine) => {
     dbUpdatedCusine.push({
       id_user: userID,
-      id_cuisine: cuisineID,
+      id_cuisine: cuisine.ID,
     });
   });
 
