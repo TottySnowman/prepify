@@ -35,13 +35,15 @@ export const GET = async (
 
   const allMealTypes = await prismaClient.meal_type.findMany();
   const allMeasures = await prismaClient.measure.findMany();
-
-  const notion_api_key: string = userInfo.notion_api_key as string;
-  var maskedPart = "*".repeat(notion_api_key.length - 10);
-  var maskedKey =
-    notion_api_key.substring(0, 10) +
-    maskedPart +
-    notion_api_key.substring(notion_api_key.length - 3);
+  let maskedKey = "";
+  if (userInfo.notion_api_key) {
+    const notion_api_key: string = userInfo.notion_api_key;
+    const maskedPart = "*".repeat(notion_api_key.length - 10);
+    maskedKey =
+      notion_api_key.substring(0, 10) +
+      maskedPart +
+      notion_api_key.substring(notion_api_key.length - 3);
+  }
 
   const response: userSettings = {
     portion: userInfo.servings,
@@ -110,12 +112,15 @@ export const DELETE = async (
     return new Response(JSON.stringify("Unauthorized!"), { status: 401 });
   }
 
+  const random = (Math.random() + 1).toString(36).substring(2);
+
   try {
     await prismaClient.users.update({
       where: {
         ID: userID,
       },
       data: {
+        email: random,
         deleted: true,
       },
     });

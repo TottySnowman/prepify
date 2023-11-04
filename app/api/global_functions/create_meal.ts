@@ -1,7 +1,6 @@
 import { prismaClient } from "../db_client";
 import getCurrentWeekNumber from "../global_functions/current_calendar_week";
 import { update_ingredientlist } from "@/app/api/notion/update_ingredientlist";
-import { users, measure } from "@prisma/client";
 import { getIngredientList } from "../global_functions/get_ingredients";
 import { meal_ingredient, user_with_measure } from "@/app/global_types/meal";
 

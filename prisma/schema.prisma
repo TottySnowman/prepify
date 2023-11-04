@@ -39,7 +39,7 @@ model Weekly_Recipe {
 
 model users {
   ID              Int              @id @default(autoincrement())
-  username        String           @unique @db.VarChar(255)
+  username        String           @db.VarChar(255)
   email           String           @unique @db.VarChar(255)
   servings        Int
   notion_api_key  String?          @db.VarChar(255)

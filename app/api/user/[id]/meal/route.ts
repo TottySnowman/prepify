@@ -40,6 +40,7 @@ export const GET = async (request: NextRequest, { params }: getMeal_props) => {
       },
       include: {
         measure: true,
+        meal_type: true,
       },
     });
     if (!user) return;
