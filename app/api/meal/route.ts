@@ -25,6 +25,7 @@ export const GET = async (request: NextRequest) => {
   const user_info = await prismaClient.users.findMany({
     include: {
       measure: true,
+      meal_type: true,
     },
   });
   const all_userIDs: number[] = user_info.map((user) => user.ID);

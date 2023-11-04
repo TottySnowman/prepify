@@ -1,4 +1,4 @@
-import { measure, users } from "@prisma/client";
+import { meal_type, measure, users } from "@prisma/client";
 
 export type meal_ingredient = {
   id: number;
@@ -54,4 +54,5 @@ export type step_by_step_guide_response = {
 
 export type user_with_measure = users & {
   measure: measure | null;
+  meal_type: meal_type | null;
 };

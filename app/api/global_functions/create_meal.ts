@@ -30,6 +30,7 @@ export default async function create_meal(
       Allergens: true,
     },
   });
+
   const diets = await prismaClient.user_Diet.findMany({
     where: {
       id_user: {
@@ -41,6 +42,15 @@ export default async function create_meal(
     },
   });
 
+  const userCuisine = await prismaClient.user_cuisine_type.findMany({
+    where: {
+      id_user: {
+        in: all_user_id,
+      },
+    },
+    include: { Cuisine: true },
+  });
+
   const apiKey = process.env.SPOONACULAR_API_KEY;
   const apiEndpoint = "https://api.spoonacular.com/recipes/complexSearch";
 
@@ -50,21 +60,30 @@ export default async function create_meal(
     const user_allergies = allergies.filter(
       (allergy) => allergy.id_user === user.ID
     );
+
     const user_diets = diets.filter((diet) => diet.id_user === user.ID);
-    let intolerancesString = "";
-    let dietString = "";
+    const userCuisineExcludes = userCuisine.filter(
+      (cuisine) => cuisine.id_user === user.ID
+    );
+
+    let intolerances: string = "";
+    let dietInclude: string = "";
+    let cuisineExclude: string = "";
     let Weekly_Recipe: Weekly_Recipe;
 
     user_allergies.forEach((allergy) => {
-      intolerancesString += allergy.Allergens?.allergy + ",";
+      intolerances += "&intolerances=" + allergy.Allergens?.allergy;
     });
-    intolerancesString = intolerancesString.slice(0, -1);
 
     user_diets.forEach((diet) => {
-      dietString += "&diet=" + diet.Diet;
+      dietInclude += "&diet=" + diet.Diet?.diet;
     });
 
-    let full_api_url = `${apiEndpoint}?apiKey=${apiKey}&sort=random&sort=healthiness&intolerances=${intolerancesString}${dietString}&number=1&instructionsRequired=true&addRecipeInformation=true&type=main%20course`;
+    userCuisineExcludes.forEach((cuisine) => {
+      cuisineExclude += "&excludeCuisine=" + cuisine.Cuisine?.cuisine_type;
+    });
+
+    let full_api_url = `${apiEndpoint}?apiKey=${apiKey}&sort=random&sort=healthiness${intolerances}${dietInclude}${cuisineExclude}&type=${user.meal_type?.name}&number=1&instructionsRequired=true&addRecipeInformation=true&type=main%20course`;
     const response = await fetch(full_api_url, { cache: "no-store" });
 
     if (!response.ok) {
