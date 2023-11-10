@@ -29,7 +29,6 @@ export default class Step_by_Step extends React.Component<
     if (step_by_step_res.ok) {
       const step_by_step_json: step_by_step_guide_response =
         await step_by_step_res.json();
-      console.log(step_by_step_json);
       this.setState({
         title: step_by_step_json.title,
         ready_in_minutes: step_by_step_json.ready_in_minutes,
