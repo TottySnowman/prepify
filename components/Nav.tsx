@@ -189,7 +189,7 @@ const Nav = () => {
               <p>Setup Notion</p>
             </Link>
             {session?.user ? (
-              <div className="dropdown dropdown-hover">
+              <div className="dropdown dropdown-hover z-10">
                 <Link href="/profile">
                   <div className="flex gap-3 md:gap-5">
                     <Image

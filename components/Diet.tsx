@@ -22,7 +22,7 @@ const Diet = () => {
       (Diet) => Diet.ID === parseInt(event.target.value)
     );
     if (!selectedDiet) {
-      alert("Diet not found!");
+      alert("Diet not found!"); //TODO remove alert
       return;
     }
     const updatedSelectedDiets = [...(SelectedDiets || []), selectedDiet];

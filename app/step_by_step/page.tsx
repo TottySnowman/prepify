@@ -254,7 +254,7 @@ export default class Step_by_Step extends React.Component<
   }
   render() {
     return (
-      <div className="container mx-auto">
+      <div className="container mx-auto flex-grow">
         <div className="text-center p-4">
           <span className="prose">
             <h2 className="mb-2 text-3xl">

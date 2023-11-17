@@ -1,4 +1,6 @@
 import "./globals.css";
+import "animate.css";
+import Footer from "@/components/Footer";
 import { Inter } from "next/font/google";
 import Provider from "@/components/Provider";
 import Nav from "@/components/Nav";
@@ -16,11 +18,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" data-theme="customTheme">
+      <body className={inter.className + " flex flex-col min-h-screen"}>
         <Provider>
           <Nav />
-          {children}
+          <div className="flex-grow">{children}</div>
+          <Footer />
         </Provider>
       </body>
     </html>

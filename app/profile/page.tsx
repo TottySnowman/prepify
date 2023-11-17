@@ -31,7 +31,7 @@ const Profile = () => {
     setTabVisible("AllergyTab");
   }, []);
   return (
-    <>
+    <div className="flex-grow">
       {session?.user ? (
         <div className="grid grid-cols-5 justify-center">
           <div className="col-span-1 prose flex flex-col mt-0">
@@ -53,7 +53,7 @@ const Profile = () => {
       ) : (
         <h1>Whoops seems like you are not logged in!</h1>
       )}
-    </>
+    </div>
   );
 };
 
