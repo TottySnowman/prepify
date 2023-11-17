@@ -1,13 +1,15 @@
+"use client";
+import React from "react";
 import { step_by_step_guide_response } from "../global_types/meal";
-import Image from "next/Image";
+import Image from "next/image";
 export default class Notion_setup extends React.Component<
   {},
-  step_by_step_props
+  step_by_step_guide_response
 > {
   render() {
     return (
       <>
-        <div className="prose flex flex-col justify-center">
+        <div className="flex flex-col justify-center items-center prose max-w-full">
           <h1>Setup Notion secret</h1>
 
           <h2>Why should you setup a Notion connection?</h2>
@@ -21,13 +23,21 @@ export default class Notion_setup extends React.Component<
 
           <h2>How to setup Notion?</h2>
           <div>
+            <h3>Create an Integration</h3>
             <p>
-              To setup Notion you first need to head to your notion integrations
+              To setup Notion you first need to head to your notion integrations{" "}
+              <a href="https://www.notion.so/my-integrations">
+                My Integrations
+              </a>
             </p>
-            <a href="https://www.notion.so/my-integrations">My Integrations</a>
 
             <p>Press on New Integration</p>
-            <Image src={""} width={} height={} alt="New Integration Button" />
+            <Image
+              src={""}
+              width={20}
+              height={20}
+              alt="New Integration Button"
+            />
             <p>Select your desired Workspace and a fitting name</p>
             <p>
               And you can also upload a logo if you want. The Prepify Logo can
@@ -36,10 +46,10 @@ export default class Notion_setup extends React.Component<
             <a>Link zum Prepify Logo Download</a>
 
             <p>Click on Send</p>
-            <Image alt="Image of send button"></Image>
+            <Image alt="Image of send button" src={""}></Image>
 
             <p>Check the Security Tab and enable following features:</p>
-            <Image alt="Image of Zugriffsrechte"></Image>
+            <Image alt="Image of Zugriffsrechte" src=""></Image>
             <p>Go to Secret Tab and copy the secret</p>
 
             <p>
