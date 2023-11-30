@@ -6,11 +6,11 @@ const JoinNow = () => {
   const counterRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    let targetCount: number;
+    let targetCount: number = 20;
     const fetchUserCount = async () => {
       const response = await fetch(`/api/user/count`);
       if (!response.ok) {
-        targetCount = 100;
+        targetCount = 20;
       } else {
         const responseJSON = await response.json();
         targetCount = responseJSON.userCount;
