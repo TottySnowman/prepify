@@ -90,22 +90,17 @@ const General_Settings = () => {
                 </div>
               </div>
             </div>
-            <div className="col-span-1 pr-5"></div>
+            <div className="col-span-1 pr-5 pl-10"></div>
           </div>
-          <div className="flex">
-            <div className="justify-start">
-              <DeleteAccount />
-            </div>
-
-            <div className="justify-end">
-              <SaveSettings
-                portion={portion}
-                notionSecret={notionSecret ? notionSecret : ""}
-                selectedMealType={mealType as meal_type}
-                username={username ? username : ""}
-                measure={measure as measure}
-              />
-            </div>
+          <div className="flex float-right">
+            <DeleteAccount />
+            <SaveSettings
+              portion={portion}
+              notionSecret={notionSecret ? notionSecret : ""}
+              selectedMealType={mealType as meal_type}
+              username={username ? username : ""}
+              measure={measure as measure}
+            />
           </div>
         </>
       </>

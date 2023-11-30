@@ -30,7 +30,7 @@ const DeleteAccount = () => {
 
   return (
     <>
-      <div>
+      <div className="pr-10">
         <button className="btn btn-error" onClick={handleButtonClick}>
           Delete Account
         </button>
@@ -41,9 +41,9 @@ const DeleteAccount = () => {
               Are you sure you want to delete your account?
             </p>
             <div className="modal-action">
-              <form method="dialog">
+              <form method="dialog" className="flex justify-center space-x-4">
                 {/* if there is a button in form, it will close the modal */}
-                <button className="btn btn-success">No</button>
+                <button className="btn btn-success">Cancel</button>
                 <button className="btn btn-error" onClick={handleDelete}>
                   Yes
                 </button>
