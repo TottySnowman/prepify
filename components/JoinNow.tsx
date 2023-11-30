@@ -6,7 +6,17 @@ const JoinNow = () => {
   const counterRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const targetCount = 6000;
+    let targetCount: number;
+    const fetchUserCount = async () => {
+      const response = await fetch(`/api/user/count`);
+      if (!response.ok) {
+        targetCount = 100;
+      } else {
+        const responseJSON = await response.json();
+        targetCount = responseJSON.userCount;
+      }
+    };
+    fetchUserCount();
 
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       if (entries[0].isIntersecting) {
@@ -46,8 +56,11 @@ const JoinNow = () => {
   };
 
   return (
-    <div className="counter-container" ref={counterRef}>
-      <span>{userCount}</span> Users
+    <div className="w-1/2 flex justify-center" ref={counterRef}>
+      <div className="prose p-6 border border-solid rounded-lg text-center">
+        <h2 className="text-primary">Join Today!</h2>
+        <h3>Prepify has currently{" " + userCount} Users!</h3>
+      </div>
     </div>
   );
 };
