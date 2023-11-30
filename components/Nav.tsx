@@ -3,7 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 import LoginPanel from "./LoginPanel";
 import { FaTimes, FaBars, FaHamburger } from "react-icons/fa";
-import { PiHamburgerFill } from "react-icons/pi";
 import {
   signOut,
   useSession,
@@ -165,8 +164,8 @@ const Nav = () => {
         </div>
       </div> */}
 
-      <div className="navbar bg-base-100">
-        <div className="flex-1 md:flex-none">
+      <nav className="navbar bg-base-100">
+        <div className="flex-1">
           <Link href="/" className="flex gap-2 flex-center items-center">
             <Image
               src="/assets/images/Prepify_logo.png"
@@ -177,8 +176,8 @@ const Nav = () => {
             <p>Prepify</p>
           </Link>
         </div>
-        <div className="hidden navbar-center md:block">
-          <div className="flex space-x-4">
+        <div className="sm:hidden md:flex-none md:block md:mb-16 md:pt-3">
+          <div className="flex space-x-4 items-center">
             <Link href="/weekly_recipe">
               <p>Weekly Recipe</p>
             </Link>
@@ -189,9 +188,9 @@ const Nav = () => {
               <p>Setup Notion</p>
             </Link>
             {session?.user ? (
-              <div className="dropdown dropdown-hover z-10">
+              <div className="dropdown dropdown-hover z-10 pl-5">
                 <Link href="/profile">
-                  <div className="flex gap-3 md:gap-5">
+                  <div className="flex sm:gap-3 items-center">
                     <Image
                       src={session?.user.image as string}
                       width={40}
@@ -199,9 +198,10 @@ const Nav = () => {
                       alt="ProfilePicture"
                       className="rounded-full"
                     />
+                    <p>{session.user.username}</p>
                   </div>
                 </Link>
-                <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                <ul className="dropdown-content menu shadow bg-base-100 rounded-box w-40">
                   <li>
                     <Link href="/profile">Your Profile</Link>
                   </li>
@@ -302,7 +302,7 @@ const Nav = () => {
             </ul>
           ) : null}
         </div>
-      </div>
+      </nav>
 
       <dialog id="login_dialog" ref={loginDialog} className="modal">
         <LoginPanel />
