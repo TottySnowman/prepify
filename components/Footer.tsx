@@ -5,11 +5,6 @@ import { SiLinktree } from "react-icons/si";
 const Footer = () => {
   return (
     <footer className="footer footer-center p-10 bg-background-200 text-base-content rounded w-full mt-5">
-      <nav className="grid grid-flow-col gap-4">
-        <a className="link link-hover">About me</a>
-        <a className="link link-hover">Contact</a>
-        <a className="link link-hover">Feedback</a>
-      </nav>
       <nav>
         <div className="grid grid-flow-col gap-4">
           <a href="https://github.com/TottySnowman/food_planer" target="_blank">
