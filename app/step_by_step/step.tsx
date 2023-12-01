@@ -1,29 +1,27 @@
 "use client";
-import {
-  meal_ingredient,
-  spoon_meal_ingredient,
-  meal_step,
-} from "@/app/global_types/meal";
-import Image from "next/image";
+import { meal_step } from "@/app/global_types/meal";
 
 export default function Step(meal_step: meal_step) {
   return (
     <div className="mb-4 border border-solid border-slate-400 bg-gray-500 p-2 rounded-lg prose-4">
-      <h2 className="bg-green-600 text-lg border-solid p-3 rounded-full inline-block">
-        {meal_step.number}
+      <h2 className="text-lg border border-solid p-3 rounded-full inline-block bg-primary">
+        <span style={{ color: "black" }}>{meal_step.number}</span>
       </h2>
 
-      <h3 className="text-xl">Ingredients needed for this step</h3>
       {meal_step.ingredients ? (
-        <div className="grid grid-cols-12">
-          {meal_step.ingredients.map((ingredient) => (
-            <div>
-              <span className="w-1/2">{ingredient.name}</span>
-            </div>
-          ))}
-        </div>
+        <>
+          <h3 className="text-xl">Ingredients needed for this step:</h3>
+          <div className="flex flex-wrap">
+            {meal_step.ingredients.map((ingredient, index) => (
+              <div key={index} className="w-1/2 flex items-center mb-2">
+                <span className="inline-block w-4 h-4 bg-black rounded-full mr-2"></span>
+                <span>{ingredient.name}</span>
+              </div>
+            ))}
+          </div>
+        </>
       ) : (
-        <span>No ingredients needed for this step!</span>
+        <h3 className="text-xl">No ingredients needed for this step!</h3>
       )}
       <p>Detailed description: {meal_step.step}</p>
       {meal_step.length ? (
