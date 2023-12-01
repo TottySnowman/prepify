@@ -178,9 +178,6 @@ const Nav = () => {
         </div>
         <div className="sm:hidden md:flex-none md:block md:mb-16 md:pt-3">
           <div className="flex space-x-4 items-center">
-            <Link href="/weekly_recipe">
-              <p>Weekly Recipe</p>
-            </Link>
             <Link href="/step_by_step">
               <p>Guide</p>
             </Link>
