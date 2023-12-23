@@ -4,10 +4,13 @@ import { verifyJwt } from "@/utils/jwtFunctions";
 
 export const GET = async (request: Request) => {
   const accessToken = request.headers.get("Authorization");
+
   const payload = await verifyJwt(accessToken || "");
+
   if (!accessToken || !payload) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
+
   const parsedUserID: number = payload.ID as number;
 
   let all_diets = await prismaClient.diet.findMany();
@@ -34,10 +37,13 @@ export const GET = async (request: Request) => {
 
 export const POST = async (request: Request) => {
   const accessToken = request.headers.get("Authorization");
+
   const payload = await verifyJwt(accessToken || "");
+
   if (!accessToken || !payload) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
+
   const parsedUserID: number = payload.ID as number;
 
   const { selected_diets } = await request.json();

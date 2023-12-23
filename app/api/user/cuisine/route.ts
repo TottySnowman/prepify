@@ -10,10 +10,13 @@ type user_cuisine_get_response = {
 
 export const GET = async (request: NextRequest) => {
   const accessToken = request.headers.get("Authorization");
+
   const payload = await verifyJwt(accessToken || "");
+
   if (!accessToken || !payload) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
+
   const parsedUserID: number = payload.ID as number;
 
   let allCuisine = await prismaClient.cuisine.findMany();
@@ -41,10 +44,13 @@ export const GET = async (request: NextRequest) => {
 
 export const POST = async (request: NextRequest) => {
   const accessToken = request.headers.get("Authorization");
+
   const payload = await verifyJwt(accessToken || "");
+
   if (!accessToken || !payload) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
+
   const parsedUserID: number = payload.ID as number;
 
   const { excludedCuisine } = await request.json();

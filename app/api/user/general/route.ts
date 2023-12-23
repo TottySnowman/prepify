@@ -13,10 +13,13 @@ interface UpdateData {
 
 export const GET = async (req: Request) => {
   const accessToken = req.headers.get("Authorization");
+
   const payload = await verifyJwt(accessToken || "");
+
   if (!accessToken || !payload) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
+
   const parsedUserID: number = payload.ID as number;
 
   const userInfo = await getUserInfo(parsedUserID);
@@ -54,10 +57,13 @@ export const GET = async (req: Request) => {
 
 export const POST = async (request: NextRequest) => {
   const accessToken = request.headers.get("Authorization");
+
   const payload = await verifyJwt(accessToken || "");
+
   if (!accessToken || !payload) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
+
   const parsedUserID: number = payload.ID as number;
   const updatedSettings: userSettings = await request.json();
   let updateData: UpdateData = {
@@ -92,10 +98,13 @@ export const POST = async (request: NextRequest) => {
 
 export const DELETE = async (request: NextRequest) => {
   const accessToken = request.headers.get("Authorization");
+
   const payload = await verifyJwt(accessToken || "");
+
   if (!accessToken || !payload) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
+
   const parsedUserID: number = payload.ID as number;
 
   const random = (Math.random() + 1).toString(36).substring(2);

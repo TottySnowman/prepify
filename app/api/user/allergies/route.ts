@@ -2,8 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { prismaClient } from "../../db_client";
 import { Allergens } from "@prisma/client";
 import { NextRequest } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
 import { verifyJwt } from "@/utils/jwtFunctions";
 
 type userAllergies = {
@@ -21,10 +19,13 @@ type updatedUserAllergies = {
 
 export const GET = async (req: Request, res: NextApiResponse) => {
   const accessToken = req.headers.get("Authorization");
+
   const payload = await verifyJwt(accessToken || "");
+
   if (!accessToken || !payload) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
+
   const parsedUserID: number = payload.ID as number;
 
   let all_allergies = await prismaClient.allergens.findMany();
@@ -56,13 +57,17 @@ export const POST = async (
   { params }: updatedUserAllergies
 ) => {
   const accessToken = request.headers.get("Authorization");
+
   const payload = await verifyJwt(accessToken || "");
+
   if (!accessToken || !payload) {
     return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
+
   const parsedUserID: number = payload.ID as number;
 
   const { selected_allergies } = await request.json();
+
   const all_allergies = await prismaClient.allergens.findMany();
 
   const userAllergies = await prismaClient.user_Allergies.findMany({
@@ -70,21 +75,28 @@ export const POST = async (
       id_user: parsedUserID,
     },
   });
+
   const idsJson1: number[] = selected_allergies.map(
     (item: Allergens) => item.ID
   );
+
   const idsJson2: number[] = userAllergies.map((item) => item.id_allergy);
+
   const all_allergies_id: number[] = all_allergies.map((allergy) => allergy.ID);
+
   const updated_allergies = selected_allergies.filter(
     (item: Allergens) =>
       !idsJson2.includes(item.ID) && all_allergies_id.includes(item.ID)
   );
+
   const deleted_allergies = userAllergies.filter(
     (item) =>
       !idsJson1.includes(item.id_allergy) &&
       all_allergies_id.includes(item.id_allergy)
   );
+
   let db_updated_allergies = [];
+
   for (let x = 0; x < updated_allergies.length; x++) {
     db_updated_allergies.push({
       id_user: parsedUserID,
@@ -96,6 +108,7 @@ export const POST = async (
     await prismaClient.user_Allergies.createMany({
       data: db_updated_allergies,
     });
+
     deleted_allergies.forEach(async (allergy) => {
       await prismaClient.user_Allergies.deleteMany({
         where: {
@@ -112,6 +125,7 @@ export const POST = async (
       }
     );
   }
+
   return new Response(JSON.stringify("Successfully updated your allergies!"), {
     status: 200,
   });

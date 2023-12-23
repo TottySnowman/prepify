@@ -2,10 +2,8 @@ import NextAuth, { Account, getServerSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import { prismaClient } from "../../db_client";
-import { SignJWT } from "jose";
-import { getJwtSecretKey, signJWTAccessToken } from "@/utils/jwtFunctions";
+import { signJWTAccessToken, verifyJwt } from "@/utils/jwtFunctions";
 import type { NextAuthOptions } from "next-auth";
-import { NextApiRequest, NextApiResponse } from "next";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -27,18 +25,12 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      /* const sessionUser = await prismaClient.users.findUnique({
-        where: {
-          email: session.user?.email?.toString(),
-        },
-      });
-      if (sessionUser != null && session.user) {
-        session.user.ID = sessionUser.ID;
-        session.user.username = sessionUser.username;
+      if (!(await verifyJwt(token.accessToken as string))) {
+        session.user = undefined;
+        return session;
       }
-      await prismaClient.$disconnect(); */
-
       session.user = token as any;
+
       return session;
     },
     async signIn({ user, profile }) {
@@ -58,6 +50,14 @@ export const authOptions: NextAuthOptions = {
             servings: 5,
           },
         });
+        const newCreatedUser = await prismaClient.users.findUnique({
+          where: {
+            email: profile?.email,
+          },
+        });
+        user.username = username?.replace(" ", "").toLowerCase() as string;
+        user.accessToken = signJWTAccessToken(newCreatedUser!);
+        user.image = newCreatedUser?.profile_picture;
       } else if (userExists && profile) {
         user.username = userExists.username;
         user.accessToken = signJWTAccessToken(userExists);
@@ -69,26 +69,5 @@ export const authOptions: NextAuthOptions = {
 };
 
 const handler = NextAuth(authOptions);
-async function createToken(userID: number, userName: string) {
-  const tokenValue = await new SignJWT({
-    id: userID,
-    username: userName,
-  })
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime("1h")
-    .sign(getJwtSecretKey());
-
-  return tokenValue;
-}
 
 export { handler as GET, handler as POST };
-
-// Use it in server contexts
-export async function auth(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  config: NextAuthOptions
-) {
-  return getServerSession(req, res, config);
-}

@@ -12,10 +12,13 @@ import { verifyJwt } from "@/utils/jwtFunctions";
 
 export const GET = async (request: NextRequest) => {
   const accessToken = request.headers.get("Authorization");
+
   const payload = await verifyJwt(accessToken || "");
+
   if (!accessToken || !payload) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
+
   const parsedUserID: number = payload.ID as number;
 
   let weekly_meal = await prismaClient.weekly_Recipe.findUnique({
