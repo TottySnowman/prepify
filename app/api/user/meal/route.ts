@@ -8,26 +8,22 @@ import {
   meal_step,
   step_by_step_guide_response,
 } from "@/app/global_types/meal";
-type getMeal_props = {
-  params: {
-    id: string;
-  };
-};
+import { verifyJwt } from "@/utils/jwtFunctions";
 
-export const GET = async (request: NextRequest, { params }: getMeal_props) => {
-  let userID;
-  try {
-    userID = parseInt(params.id);
-  } catch (error) {
-    return new Response(JSON.stringify("Failed to login!"), { status: 403 });
+export const GET = async (request: NextRequest) => {
+  const accessToken = request.headers.get("Authorization");
+  const payload = await verifyJwt(accessToken || "");
+  if (!accessToken || !payload) {
+    return new Response("Unauthorized", { status: 401 });
   }
+  const parsedUserID: number = payload.ID as number;
 
   let weekly_meal = await prismaClient.weekly_Recipe.findUnique({
     where: {
       week_year_id_user: {
         week: getCurrentWeekNumber(),
         year: new Date().getFullYear(),
-        id_user: userID,
+        id_user: parsedUserID,
       },
     },
   });
@@ -35,7 +31,7 @@ export const GET = async (request: NextRequest, { params }: getMeal_props) => {
   if (!weekly_meal) {
     const user = await prismaClient.users.findUnique({
       where: {
-        ID: userID,
+        ID: parsedUserID,
       },
       include: {
         measure: true,
@@ -67,7 +63,7 @@ export const GET = async (request: NextRequest, { params }: getMeal_props) => {
 
   const user_info = await prismaClient.users.findUnique({
     where: {
-      ID: userID,
+      ID: parsedUserID,
     },
     include: {
       measure: true,

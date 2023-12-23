@@ -1,37 +1,19 @@
-import { NextRequest } from "next/server";
-import { prismaClient } from "../../../db_client";
+import { prismaClient } from "../../db_client";
 import { Diet, User_Diet } from "@prisma/client";
-type user_diet = {
-  params: {
-    id: string;
-    selected_diets: string[];
-  };
-};
+import { verifyJwt } from "@/utils/jwtFunctions";
 
-type updatedUserDiets = {
-  params: {
-    id: string;
-    selected_diets: string[];
-  };
-};
-
-type diet = {
-  ID: number;
-  diet: string;
-};
-
-export const GET = async (request: NextRequest, { params }: user_diet) => {
-  let userID: number;
-  try {
-    userID = parseInt(params.id);
-  } catch (error) {
-    return new Response("Failed to login!", { status: 401 });
+export const GET = async (request: Request) => {
+  const accessToken = request.headers.get("Authorization");
+  const payload = await verifyJwt(accessToken || "");
+  if (!accessToken || !payload) {
+    return new Response("Unauthorized", { status: 401 });
   }
+  const parsedUserID: number = payload.ID as number;
 
   let all_diets = await prismaClient.diet.findMany();
   const userDiets = await prismaClient.user_Diet.findMany({
     where: {
-      id_user: userID,
+      id_user: parsedUserID,
     },
     include: {
       Diet: true,
@@ -50,26 +32,26 @@ export const GET = async (request: NextRequest, { params }: user_diet) => {
   return new Response(JSON.stringify(response), { status: 200 });
 };
 
-export const POST = async (request: NextRequest, { params }: user_diet) => {
-  let userID: number;
-  try {
-    userID = parseInt(params.id);
-  } catch (error) {
-    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
+export const POST = async (request: Request) => {
+  const accessToken = request.headers.get("Authorization");
+  const payload = await verifyJwt(accessToken || "");
+  if (!accessToken || !payload) {
+    return new Response("Unauthorized", { status: 401 });
   }
+  const parsedUserID: number = payload.ID as number;
 
   const { selected_diets } = await request.json();
 
   const allDiets: Diet[] = await prismaClient.diet.findMany();
   const userDiets: User_Diet[] = await prismaClient.user_Diet.findMany({
     where: {
-      id_user: userID,
+      id_user: parsedUserID,
     },
   });
 
   const oldSelectedDiets: number[] = userDiets.map((diet) => diet.id_diet);
   const newSelectedDiets: number[] = selected_diets.map(
-    (diet: diet) => diet.ID
+    (diet: Diet) => diet.ID
   );
 
   const allDietId: number[] = allDiets.map((diet) => diet.ID);
@@ -86,7 +68,7 @@ export const POST = async (request: NextRequest, { params }: user_diet) => {
 
   updatedDiets.map((updatedDietID: number) => {
     db_update_diet.push({
-      id_user: userID,
+      id_user: parsedUserID,
       id_diet: updatedDietID,
     });
   });
@@ -97,7 +79,7 @@ export const POST = async (request: NextRequest, { params }: user_diet) => {
     });
     await prismaClient.user_Diet.deleteMany({
       where: {
-        id_user: userID,
+        id_user: parsedUserID,
         id_diet: {
           in: deletedDiets,
         },

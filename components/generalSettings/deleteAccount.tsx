@@ -19,8 +19,12 @@ const DeleteAccount = () => {
       return;
     }
 
-    const resp = await fetch(`api/user/${session.user.id}/general`, {
+    const resp = await fetch(`api/user/general`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${session.user.accessToken}`,
+      },
     });
     signOut();
     if (resp.ok) {

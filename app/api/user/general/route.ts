@@ -1,12 +1,7 @@
 import { prismaClient } from "@/app/api/db_client";
 import { NextRequest } from "next/server";
 import { userSettings } from "@/app/global_types/general";
-
-type userSettingsImport = {
-  params: {
-    id: string;
-  };
-};
+import { verifyJwt } from "@/utils/jwtFunctions";
 
 interface UpdateData {
   username: string;
@@ -16,18 +11,15 @@ interface UpdateData {
   notion_api_key?: string;
 }
 
-export const GET = async (
-  request: NextRequest,
-  { params }: userSettingsImport
-) => {
-  let userID: number;
-  try {
-    userID = parseInt(params.id);
-  } catch (error) {
-    return new Response(JSON.stringify("Unauthorized!"), { status: 401 });
+export const GET = async (req: Request) => {
+  const accessToken = req.headers.get("Authorization");
+  const payload = await verifyJwt(accessToken || "");
+  if (!accessToken || !payload) {
+    return new Response("Unauthorized", { status: 401 });
   }
+  const parsedUserID: number = payload.ID as number;
 
-  const userInfo = await getUserInfo(userID);
+  const userInfo = await getUserInfo(parsedUserID);
 
   if (!userInfo) {
     return new Response(JSON.stringify("Unauthorized!"), { status: 401 });
@@ -60,16 +52,13 @@ export const GET = async (
   return new Response(JSON.stringify(response), { status: 200 });
 };
 
-export const POST = async (
-  request: NextRequest,
-  { params }: userSettingsImport
-) => {
-  let userID: number;
-  try {
-    userID = parseInt(params.id);
-  } catch (error) {
-    return new Response(JSON.stringify("Unauthorized!"), { status: 401 });
+export const POST = async (request: NextRequest) => {
+  const accessToken = request.headers.get("Authorization");
+  const payload = await verifyJwt(accessToken || "");
+  if (!accessToken || !payload) {
+    return new Response("Unauthorized", { status: 401 });
   }
+  const parsedUserID: number = payload.ID as number;
   const updatedSettings: userSettings = await request.json();
   let updateData: UpdateData = {
     username: updatedSettings.username,
@@ -85,7 +74,7 @@ export const POST = async (
   try {
     await prismaClient.users.update({
       where: {
-        ID: userID,
+        ID: parsedUserID,
       },
       data: updateData,
     });
@@ -101,23 +90,20 @@ export const POST = async (
   });
 };
 
-export const DELETE = async (
-  request: NextRequest,
-  { params }: userSettingsImport
-) => {
-  let userID: number;
-  try {
-    userID = parseInt(params.id);
-  } catch (error) {
-    return new Response(JSON.stringify("Unauthorized!"), { status: 401 });
+export const DELETE = async (request: NextRequest) => {
+  const accessToken = request.headers.get("Authorization");
+  const payload = await verifyJwt(accessToken || "");
+  if (!accessToken || !payload) {
+    return new Response("Unauthorized", { status: 401 });
   }
+  const parsedUserID: number = payload.ID as number;
 
   const random = (Math.random() + 1).toString(36).substring(2);
 
   try {
     await prismaClient.users.update({
       where: {
-        ID: userID,
+        ID: parsedUserID,
       },
       data: {
         email: random,

@@ -3,7 +3,7 @@ import { getSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Toast from "./Toast";
-import { Diet } from "@prisma/client";
+import type { Diet } from "@prisma/client";
 
 type diet_response = {
   SelectedDiets: Diet[];
@@ -56,8 +56,12 @@ const Diet = () => {
     if (!session?.user) {
       return;
     }
-    const resp = await fetch(`api/user/${session.user.id}/diet`, {
+    const resp = await fetch(`api/user/diet`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${session.user.accessToken}`,
+      },
       body: JSON.stringify({
         selected_diets: SelectedDiets,
       }),
@@ -72,7 +76,12 @@ const Diet = () => {
     const getDiet = async () => {
       const session = await getSession();
       if (session?.user) {
-        const response = await fetch(`/api/user/${session.user.id}/diet`);
+        const response = await fetch(`/api/user/diet`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${session.user.accessToken}`,
+          },
+        });
         if (response.ok) {
           const Diets: diet_response = await response.json();
           setAllDiets(Diets.All_Diets);

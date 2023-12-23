@@ -13,7 +13,7 @@ const SaveSettings = (updatedUserSettings: userSettings) => {
       return;
     }
 
-    const resp = await fetch(`api/user/${session.user.id}/general`, {
+    const resp = await fetch(`api/user/general`, {
       method: "POST",
       body: JSON.stringify({
         username: updatedUserSettings.username,
@@ -22,6 +22,10 @@ const SaveSettings = (updatedUserSettings: userSettings) => {
         selectedMealType: updatedUserSettings.selectedMealType,
         measure: updatedUserSettings.measure,
       }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${session.user.accessToken}`,
+      },
     });
     setToastMessage(await resp.json());
     setToastVisible(true);

@@ -1,6 +1,6 @@
 "use client";
 import { getSession } from "next-auth/react";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { userSettings } from "@/app/global_types/general";
 import SaveSettings from "./generalSettings/saveSettings";
 import UsernameSettings from "./generalSettings/usernameSetting";
@@ -29,9 +29,13 @@ const General_Settings = () => {
     const getSettings = async () => {
       const session = await getSession();
       if (session?.user) {
-        const response = await fetch(`/api/user/${session.user.id}/general`);
+        const response = await fetch(`/api/user/general`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${session.user.accessToken}`,
+          },
+        });
         if (!response.ok) {
-          //TODO Error handling
           return;
         }
         const responseData: userSettings = await response.json();

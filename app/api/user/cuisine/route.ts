@@ -1,37 +1,26 @@
 import { NextRequest } from "next/server";
-import { prismaClient } from "../../../db_client";
+import { prismaClient } from "../../db_client";
 import { Cuisine, user_cuisine_type } from "@prisma/client";
-
-type cuisine_import = {
-  params: {
-    id: string;
-  };
-};
-type cuisine_import_update = {
-  params: {
-    id: string;
-    excludedCuisine: Cuisine[];
-  };
-};
+import { verifyJwt } from "@/utils/jwtFunctions";
 
 type user_cuisine_get_response = {
   selectedCuisine: (Cuisine | null)[];
   AllCuisine: Cuisine[];
 };
 
-export const GET = async (request: NextRequest, { params }: cuisine_import) => {
-  let userID: number;
-  try {
-    userID = parseInt(params.id);
-  } catch (error) {
-    return new Response("Failed to login!", { status: 401 });
+export const GET = async (request: NextRequest) => {
+  const accessToken = request.headers.get("Authorization");
+  const payload = await verifyJwt(accessToken || "");
+  if (!accessToken || !payload) {
+    return new Response("Unauthorized", { status: 401 });
   }
+  const parsedUserID: number = payload.ID as number;
 
   let allCuisine = await prismaClient.cuisine.findMany();
 
   const userCuisine = await prismaClient.user_cuisine_type.findMany({
     where: {
-      id_user: userID,
+      id_user: parsedUserID,
     },
     include: {
       Cuisine: true,
@@ -50,23 +39,20 @@ export const GET = async (request: NextRequest, { params }: cuisine_import) => {
   return new Response(JSON.stringify(response), { status: 200 });
 };
 
-export const POST = async (
-  request: NextRequest,
-  { params }: cuisine_import_update
-) => {
-  let userID: number;
-  try {
-    userID = parseInt(params.id);
-  } catch (error) {
-    return new Response(JSON.stringify("Unauthorized!"), { status: 401 });
+export const POST = async (request: NextRequest) => {
+  const accessToken = request.headers.get("Authorization");
+  const payload = await verifyJwt(accessToken || "");
+  if (!accessToken || !payload) {
+    return new Response("Unauthorized", { status: 401 });
   }
+  const parsedUserID: number = payload.ID as number;
 
   const { excludedCuisine } = await request.json();
   const allCuisineTypes: Cuisine[] = await prismaClient.cuisine.findMany();
 
   const userCuisineTypes = await prismaClient.user_cuisine_type.findMany({
     where: {
-      id_user: userID,
+      id_user: parsedUserID,
     },
     include: {
       Cuisine: true,
@@ -96,7 +82,7 @@ export const POST = async (
 
   updatedCusine.map((cuisine) => {
     dbUpdatedCusine.push({
-      id_user: userID,
+      id_user: parsedUserID,
       id_cuisine: cuisine.ID,
     });
   });
@@ -107,7 +93,7 @@ export const POST = async (
     });
     await prismaClient.user_cuisine_type.deleteMany({
       where: {
-        id_user: userID,
+        id_user: parsedUserID,
         id_cuisine: {
           in: deletedCusine,
         },
@@ -116,7 +102,7 @@ export const POST = async (
   } catch (error) {
     return new Response(
       JSON.stringify("Failed to update cuisine types! Try again!"),
-      { status: 502 }
+      { status: 500 }
     );
   }
 

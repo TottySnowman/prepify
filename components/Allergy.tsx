@@ -66,8 +66,13 @@ const Allergy = () => {
     if (!session?.user) {
       return;
     }
-    const resp = await fetch(`api/user/${session.user.id}/allergies`, {
+
+    const resp = await fetch(`api/user/allergies`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session?.user?.accessToken!,
+      },
       body: JSON.stringify({
         selected_allergies: SelectedAllergies,
       }),
@@ -83,13 +88,20 @@ const Allergy = () => {
     const fetchAllergies = async () => {
       const session = await getSession();
       if (session?.user) {
-        const response = await fetch(`/api/user/${session.user.id}/allergies`);
+        const response = await fetch(`/api/user/allergies`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.user.accessToken,
+          },
+        });
         if (response.ok) {
           const allergies: allergies_response = await response.json();
           if (allergies) {
             setAllAllergies(allergies.Allergies);
             setSelectedAllergies(allergies.SelectedAllergies);
           }
+        } else {
+          console.log(response.statusText);
         }
       }
     };

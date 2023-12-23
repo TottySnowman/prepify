@@ -1,6 +1,10 @@
-import { NextRequest } from "next/server";
-import { prismaClient } from "../../../db_client";
+import { NextApiRequest, NextApiResponse } from "next";
+import { prismaClient } from "../../db_client";
 import { Allergens } from "@prisma/client";
+import { NextRequest } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../auth/[...nextauth]/route";
+import { verifyJwt } from "@/utils/jwtFunctions";
 
 type userAllergies = {
   params: {
@@ -15,13 +19,13 @@ type updatedUserAllergies = {
   };
 };
 
-export const GET = async (request: NextRequest, { params }: userAllergies) => {
-  let parsedUserID: number;
-  try {
-    parsedUserID = parseInt(params.id);
-  } catch (error) {
+export const GET = async (req: Request, res: NextApiResponse) => {
+  const accessToken = req.headers.get("Authorization");
+  const payload = await verifyJwt(accessToken || "");
+  if (!accessToken || !payload) {
     return new Response("Unauthorized", { status: 401 });
   }
+  const parsedUserID: number = payload.ID as number;
 
   let all_allergies = await prismaClient.allergens.findMany();
   const userAllergies = await prismaClient.user_Allergies.findMany({
@@ -51,18 +55,19 @@ export const POST = async (
   request: NextRequest,
   { params }: updatedUserAllergies
 ) => {
-  let user_id: number;
-  try {
-    user_id = parseInt(params.id);
-  } catch (error) {
-    return new Response(JSON.stringify("Failed to login!"), { status: 401 });
+  const accessToken = request.headers.get("Authorization");
+  const payload = await verifyJwt(accessToken || "");
+  if (!accessToken || !payload) {
+    return new Response(JSON.stringify("Unauthorized"), { status: 401 });
   }
+  const parsedUserID: number = payload.ID as number;
+
   const { selected_allergies } = await request.json();
   const all_allergies = await prismaClient.allergens.findMany();
 
   const userAllergies = await prismaClient.user_Allergies.findMany({
     where: {
-      id_user: user_id,
+      id_user: parsedUserID,
     },
   });
   const idsJson1: number[] = selected_allergies.map(
@@ -82,7 +87,7 @@ export const POST = async (
   let db_updated_allergies = [];
   for (let x = 0; x < updated_allergies.length; x++) {
     db_updated_allergies.push({
-      id_user: user_id,
+      id_user: parsedUserID,
       id_allergy: updated_allergies[x].ID,
     });
   }
@@ -94,7 +99,7 @@ export const POST = async (
     deleted_allergies.forEach(async (allergy) => {
       await prismaClient.user_Allergies.deleteMany({
         where: {
-          id_user: user_id,
+          id_user: parsedUserID,
           id_allergy: allergy.id_allergy,
         },
       });

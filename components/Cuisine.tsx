@@ -3,7 +3,7 @@ import { getSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Toast from "./Toast";
-import { Cuisine } from "@prisma/client";
+import type { Cuisine } from "@prisma/client";
 
 type user_cuisine_get_response = {
   selectedCuisine: Cuisine[] | null;
@@ -63,8 +63,12 @@ const Cuisine = () => {
     if (!session?.user) {
       return;
     }
-    const resp = await fetch(`api/user/${session.user.id}/cuisine`, {
+    const resp = await fetch(`api/user/cuisine`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${session.user.accessToken}`,
+      },
       body: JSON.stringify({
         excludedCuisine: SelectedCuisine,
       }),
@@ -80,7 +84,12 @@ const Cuisine = () => {
     const fetchCuisne = async () => {
       const session = await getSession();
       if (session?.user) {
-        const response = await fetch(`/api/user/${session.user.id}/cuisine`);
+        const response = await fetch(`/api/user/cuisine`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${session.user.accessToken}`,
+          },
+        });
         if (response.ok) {
           const cuisine: user_cuisine_get_response = await response.json();
           if (cuisine) {

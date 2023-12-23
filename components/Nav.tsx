@@ -40,7 +40,7 @@ const Nav = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  });
+  }, []);
   function openLoginPanel() {
     if (loginDialog.current) {
       loginDialog.current.showModal();
