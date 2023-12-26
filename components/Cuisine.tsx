@@ -24,7 +24,8 @@ const Cuisine = () => {
       (Cuisine) => Cuisine.ID === parseInt(event.target.value)
     );
     if (!selectedCuisine) {
-      alert("Cuisine not found!");
+      setToastMessage("Failed to select cuisine!");
+      setToastVisible(true);
       return;
     }
     const updatedSelectedCuisine = [
@@ -44,7 +45,8 @@ const Cuisine = () => {
       (Cuisine) => Cuisine.ID === CuisineID
     );
     if (!selectedCuisine) {
-      alert("Cuisine not found!");
+      setToastMessage("Failed to select cuisine!");
+      setToastVisible(true);
       return;
     }
 
@@ -103,36 +105,47 @@ const Cuisine = () => {
   }, []);
   return (
     <>
-      <div className="text-center">
-        <h2>Here you can choose the different Cuisinetypes</h2>
-        <br />
-        <h3>
-          You can choose the cuisine-type you want to exclude in your meal preps
-        </h3>
+      <div className="mt-4 w-full">
+        <span className="prose">
+          <h2>
+            You can choose the cuisine-type you want to exclude in your meal
+            preps
+          </h2>
+        </span>
       </div>
       <div>
-        <h3>Already excluded meal cuisine types:</h3>
+        <span className="prose">
+          <h3 className="mb-4 mt-4">Already excluded meal cuisine types:</h3>
+        </span>
+
         {SelectedCuisine ? (
           <div className="grid grid-cols-5">
             {SelectedCuisine.map((cuisine) => (
               <span
-                className="border bg-neutral rounded-full p-2 w-1/2 col-span-1 text-center mb-3"
+                className="border bg-neutral rounded-full p-2 w-full col-span-1 text-center mb-3 border-primary"
                 key={cuisine.ID.toString()}
               >
-                {cuisine.cuisine_type}
-                <button
-                  className="rounded-full ml-4 border-neutral"
-                  onClick={() => handleDeleteCuisine(cuisine.ID)}
-                >
-                  x
-                </button>
+                <div className="flex items-center">
+                  <span className="flex-grow">{cuisine.cuisine_type}</span>
+                  <button
+                    className="rounded-full ml-2 border pl-1.5 pr-1.5 flex items-center justify-center border-error"
+                    onClick={() => handleDeleteCuisine(cuisine.ID)}
+                  >
+                    X
+                  </button>
+                </div>
               </span>
             ))}
           </div>
         ) : (
-          <h4>Non selected!</h4>
+          <span className="prose">
+            <h3 className="mb-4">No cuisine selected!</h3>
+          </span>
         )}
-        <h3 className="mb-4">Exclude your Cuisine Types</h3>
+        <span className="prose">
+          <h3 className="mb-4">Exclude your Cuisine Types</h3>
+        </span>
+
         {AllCuisine ? (
           <>
             <select
@@ -149,7 +162,9 @@ const Cuisine = () => {
             </select>
           </>
         ) : (
-          <h4>Whoops seems like there are no Cuisine to choose from!</h4>
+          <span className="prose">
+            <h3>Whoops seems like there are no Cuisine to choose from!</h3>
+          </span>
         )}
         <div className="flex float-right pr-9">
           <button className="btn btn-primary" onClick={() => handleSaveClick()}>

@@ -7,11 +7,11 @@ const NotionSecretSetting = (notionSecretImport: notionSecretSettingImport) => {
   };
 
   return (
-    <div className="flex flex-col mb-3 border-2 border-primary rounded-md p-2 bg-slate-700">
+    <div className="flex flex-col mb-4 border-2 border-primary rounded-md p-2 bg-background-100">
       <p className="mb-4 text-center">Change or set your Notion secret:</p>
       <input
         type="text"
-        className="text-center input input-bordered input-primary"
+        className="text-center input input-bordered input-secondary mb-2"
         value={
           notionSecretImport.notionSecret ? notionSecretImport.notionSecret : ""
         }

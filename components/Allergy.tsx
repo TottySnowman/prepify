@@ -27,7 +27,8 @@ const Allergy = () => {
       (allergy) => allergy.ID === parseInt(event.target.value)
     );
     if (!selectedAllergy) {
-      alert("Allergy not found!");
+      setToastMessage("Failed to select allergy!");
+      setToastVisible(true);
       return;
     }
     const updatedSelectedAllergies = [
@@ -47,7 +48,8 @@ const Allergy = () => {
       (allergy) => allergy.ID === allergyID
     );
     if (!selectedAllergy) {
-      alert("Allergy not found!");
+      setToastMessage("Allergy not found!");
+      setToastVisible(true);
       return;
     }
 
@@ -101,7 +103,8 @@ const Allergy = () => {
             setSelectedAllergies(allergies.SelectedAllergies);
           }
         } else {
-          console.log(response.statusText);
+          setToastMessage(response.statusText);
+          setToastVisible(true);
         }
       }
     };
@@ -111,28 +114,37 @@ const Allergy = () => {
   return (
     <>
       <div>
-        <h3>Already selected allergies</h3>
+        <span className="prose">
+          <h2 className="mb-4">Already selected allergies</h2>
+        </span>
+
         {SelectedAllergies ? (
-          <div className="grid grid-cols-5">
+          <div className="grid grid-cols-5 gap-2">
             {SelectedAllergies.map((allergy) => (
               <span
-                className="border bg-neutral rounded-full p-2 w-1/2 col-span-1 text-center mb-3"
+                className="border bg-neutral rounded-full p-2 w-full col-span-1 text-center mb-3 border-primary"
                 key={allergy.ID.toString()}
               >
-                {allergy.allergy}
-                <button
-                  className="rounded-full ml-4 border-neutral"
-                  onClick={() => handleDeleteAllergy(allergy.ID)}
-                >
-                  x
-                </button>
+                <div className="flex items-center">
+                  <span className="flex-grow">{allergy.allergy}</span>
+                  <button
+                    className="rounded-full ml-2 border pl-1.5 pr-1.5 flex items-center justify-center border-error"
+                    onClick={() => handleDeleteAllergy(allergy.ID)}
+                  >
+                    X
+                  </button>
+                </div>
               </span>
             ))}
           </div>
         ) : (
-          <h4>No allergies selected!</h4>
+          <span className="prose">
+            <h2 className="mb-4">No allergies selected!</h2>
+          </span>
         )}
-        <h3 className="mb-4">Add your allergies</h3>
+        <span className="prose">
+          <h2 className="mb-4 mt-4">Add your allergies</h2>
+        </span>
         {AllAllergies ? (
           <>
             <select
@@ -149,7 +161,11 @@ const Allergy = () => {
             </select>
           </>
         ) : (
-          <h4>Whoops seems like there are no allergies to choose from!</h4>
+          <span className="prose">
+            <h2 className="mb-4 mt-4">
+              Whoops seems like there are no allergies to choose from!
+            </h2>
+          </span>
         )}
         <div className="flex float-right pr-9">
           <button className="btn btn-primary" onClick={() => handleSaveClick()}>

@@ -53,61 +53,61 @@ const General_Settings = () => {
 
   return (
     <>
-      <h1>Customize your own Profile!</h1>
-      <>
-        <>
-          <div className="grid grid-cols-2 justify-items-stretch gap-2">
-            <div className="col-span-1">
-              <div className="grid grid-cols-2 gap-2">
-                <div className="col-span-1">
-                  <UsernameSettings
-                    username={username as string}
-                    setUsername={setUsername}
-                  />
-                </div>
-                <div className="col-span-1">
-                  <MealTypeSetting
-                    mealtype={mealType}
-                    setMealType={setMealType}
-                    allMealTypes={allMealTypes}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="col-span-1 pr-5">
-              <NotionSecretSetting
-                notionSecret={notionSecret as string}
-                setNotionSecret={setNotionSecret}
+      <div className="mt-4 mb-4">
+        <span className="prose">
+          <h2>Customize your own Profile!</h2>
+        </span>
+      </div>
+
+      <div className="grid sm:grid-cols-1 md:grid-cols-2 justify-items-stretch gap-2">
+        <div className="md:col-span-1">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="md:col-span-1">
+              <UsernameSettings
+                username={username as string}
+                setUsername={setUsername}
               />
             </div>
-            <div className="col-span-1">
-              <div className="grid grid-cols-2 gap-2">
-                <div className="col-span-1">
-                  <PortionSetting portion={portion} setPortion={setPortion} />
-                </div>
-                <div className="col-span-1">
-                  <MeasureSettings
-                    measure={measure}
-                    setMeasure={setMeasure}
-                    allMeasure={allMeasure}
-                  />
-                </div>
-              </div>
+            <div className="md:col-span-1">
+              <MealTypeSetting
+                mealtype={mealType}
+                setMealType={setMealType}
+                allMealTypes={allMealTypes}
+              />
             </div>
-            <div className="col-span-1 pr-5 pl-10"></div>
           </div>
-          <div className="flex float-right">
-            <DeleteAccount />
-            <SaveSettings
-              portion={portion}
-              notionSecret={notionSecret ? notionSecret : ""}
-              selectedMealType={mealType as meal_type}
-              username={username ? username : ""}
-              measure={measure as measure}
-            />
+        </div>
+        <div className="md:col-span-1 pr-5">
+          <NotionSecretSetting
+            notionSecret={notionSecret as string}
+            setNotionSecret={setNotionSecret}
+          />
+        </div>
+        <div className="col-span-1">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="md:col-span-1">
+              <PortionSetting portion={portion} setPortion={setPortion} />
+            </div>
+            <div className="md:col-span-1">
+              <MeasureSettings
+                measure={measure}
+                setMeasure={setMeasure}
+                allMeasure={allMeasure}
+              />
+            </div>
           </div>
-        </>
-      </>
+        </div>
+      </div>
+      <div className="flex float-right">
+        <DeleteAccount />
+        <SaveSettings
+          portion={portion}
+          notionSecret={notionSecret ? notionSecret : ""}
+          selectedMealType={mealType as meal_type}
+          username={username ? username : ""}
+          measure={measure as measure}
+        />
+      </div>
     </>
   );
 };

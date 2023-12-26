@@ -107,7 +107,7 @@ export default async function create_meal(
       `https://api.spoonacular.com/recipes/${responseData.results[0].id}/information?apiKey=${process.env.SPOONACULAR_API_KEY}`
     );
     if (!recipe_info.ok) {
-      //TODO Error handling
+      console.log("Error fetching recipe info!");
       break;
     }
 

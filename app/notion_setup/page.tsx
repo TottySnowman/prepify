@@ -4,11 +4,7 @@ import Image from "next/image";
 export default class Notion_setup extends React.Component<{}> {
   constructor({}) {
     super({});
-    this.sendIngredientList = this.sendIngredientList.bind(this);
   }
-  sendIngredientList = () => {
-    alert("yiyi");
-  };
   render() {
     return (
       <>
@@ -41,10 +37,7 @@ export default class Notion_setup extends React.Component<{}> {
               className="w-1/2"
             />
             <p>Select your desired Workspace and a fitting name</p>
-            <p>
-              And you can also upload a logo if you want. The Prepify Logo can
-              be found <a>here</a>
-            </p>
+            <p>And you can also upload a logo if you want.</p>
 
             <p>Click on Submit</p>
             <Image
@@ -121,13 +114,9 @@ export default class Notion_setup extends React.Component<{}> {
               className="w-1/2"
             />
             <p>
-              Now Notion should be setup! You can try it by pressing the button
-              over here or wait till friday!
+              Now Notion should be setup! You will see your Shopping list on
+              friday!
             </p>
-
-            <button onClick={() => this.sendIngredientList()}>
-              Press to add the ingredients to your shoppinglist!
-            </button>
           </div>
         </div>
       </>

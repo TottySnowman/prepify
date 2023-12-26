@@ -22,7 +22,8 @@ const Diet = () => {
       (Diet) => Diet.ID === parseInt(event.target.value)
     );
     if (!selectedDiet) {
-      alert("Diet not found!"); //TODO remove alert
+      setToastMessage("Diet not found!");
+      setToastVisible(true);
       return;
     }
     const updatedSelectedDiets = [...(SelectedDiets || []), selectedDiet];
@@ -37,7 +38,9 @@ const Diet = () => {
   const handleDeleteDiet = (DietID: number) => {
     const selectedDiet = SelectedDiets?.find((Diet) => Diet.ID === DietID);
     if (!selectedDiet) {
-      alert("Diet not found!");
+      //alert("Diet not found!");
+      setToastMessage("Diet not found!");
+      setToastVisible(true);
       return;
     }
 
@@ -94,33 +97,42 @@ const Diet = () => {
   return (
     <>
       <div>
-        <h1>Diet</h1>
-        <br />
+        <div className="mt-4 w-full">
+          <span className="prose">
+            <h2>Select your desired diets</h2>
+          </span>
+        </div>
+
         {SelectedDiets ? (
           <>
             <div>
-              <h2>Already selected Diets:</h2>
-              <br />
-              <div className="grid grid-cols-5">
+              <span className="prose">
+                <h3 className="mb-4 mt-4">Already selected Diets:</h3>
+              </span>
+              <div className="grid grid-cols-4 gap-2">
                 {SelectedDiets.map((diet) => (
                   <span
-                    className="border bg-neutral rounded-full p-2 w-1/2 col-span-1 text-center mb-3"
+                    className="border bg-neutral rounded-full p-2 w-3/4 col-span-1 text-center mb-3 border-primary"
                     key={diet.ID.toString()}
                   >
-                    {diet.diet}
-                    <button
-                      className="rounded-full ml-4 border-neutral"
-                      onClick={() => handleDeleteDiet(diet.ID)}
-                    >
-                      x
-                    </button>
+                    <div className="flex items-center">
+                      <span className="flex-grow">{diet.diet}</span>
+                      <button
+                        className="rounded-full ml-2 border pl-1.5 pr-1.5 flex items-center justify-center border-error"
+                        onClick={() => handleDeleteDiet(diet.ID)}
+                      >
+                        X
+                      </button>
+                    </div>
                   </span>
                 ))}
               </div>
             </div>
           </>
         ) : null}
-        <h3 className="mb-4">Add your Diets</h3>
+        <span className="prose">
+          <h3 className="mb-4">Add your Diets</h3>
+        </span>
         {AllDiets ? (
           <>
             <select
@@ -137,7 +149,9 @@ const Diet = () => {
             </select>
           </>
         ) : (
-          <h4>Whoops seems like there are no Diets to choose from!</h4>
+          <span className="prose">
+            <h3>Whoops seems like there are no Diets to choose from!</h3>
+          </span>
         )}
         <div className="flex float-right pr-9">
           <button className="btn btn-primary" onClick={() => handleSaveClick()}>

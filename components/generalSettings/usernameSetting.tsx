@@ -7,16 +7,16 @@ const UsernameSettings = (usernameImport: usernameSettingImport) => {
     usernameImport.setUsername(event.target.value);
   };
   return (
-    <div className="flex flex-col mb-3 border-2 border-primary rounded-md p-2 bg-slate-700">
+    <div className="flex flex-col mb-4 border-2 border-primary rounded-md p-2 bg-background-100">
       <div className="mb-4 text-center">
-        <p>You can change your Username here:</p>
+        <p>Set your username:</p>
       </div>
       <input
         type="text"
         name="username"
         value={usernameImport.username ? usernameImport.username : ""}
         onChange={changeUsername}
-        className="text-center input input-bordered input-primary"
+        className="text-center input input-bordered input-primary mb-2"
       />
     </div>
   );

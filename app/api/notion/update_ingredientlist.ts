@@ -23,8 +23,7 @@ export async function update_ingredientlist(params: notion_import_params) {
     });
 
     if (allPages.results.length === 0) {
-      //TODO Message, No pages were found
-      console.log("Error no pages found");
+      console.log("Error no pages found for user");
       return;
     }
 
@@ -51,7 +50,7 @@ export async function update_ingredientlist(params: notion_import_params) {
       //Sets new Page
       pageID = newPage.id;
     } catch (error) {
-      //TODO Message, Failed to create Page
+      //Message, Failed to create Page
       console.log(error);
       return;
     }
