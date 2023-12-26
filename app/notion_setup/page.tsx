@@ -15,8 +15,8 @@ export default class Notion_setup extends React.Component<{}> {
           <div>
             <p>
               By adding your Notion connection you will get your ingredients
-              including the needed measurements for the week. So you don't need
-              to plan the ingredients for the recipe.
+              including the needed measurements for the week. So you don&apos;t
+              need to plan the ingredients for the recipe.
             </p>
           </div>
 
@@ -64,7 +64,8 @@ export default class Notion_setup extends React.Component<{}> {
             <h3>Setup Shoppinglist</h3>
             <p>
               In Notion go to the Page where you want the Shoppinglist to be
-              saved or create a new one Called "Prepify Shoppinglist"
+              saved or create a new one Called &apos;&apos;Prepify
+              Shoppinglist&apos;&apos;
             </p>
             <p>
               Press the three dots on top and go to connections Add Connection

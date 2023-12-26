@@ -5,7 +5,7 @@ import { prismaClient } from "../../db_client";
 import { signJWTAccessToken, verifyJwt } from "@/utils/jwtFunctions";
 import type { NextAuthOptions } from "next-auth";
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
