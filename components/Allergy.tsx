@@ -21,6 +21,7 @@ const Allergy = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [ToastMessage, setToastMessage] = useState<string>("");
   const [ToastVisible, setToastVisible] = useState<boolean>(false);
+  const [ToastMessageType, setToastMessageType] = useState<string>("");
   const router = useRouter();
   const handleAllergyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedAllergy = AllAllergies?.find(
@@ -81,6 +82,7 @@ const Allergy = () => {
     });
     setToastMessage(await resp.json());
     setToastVisible(true);
+    setToastMessageType("success");
     if (resp.ok) {
       router.push("/profile");
     }
@@ -104,6 +106,7 @@ const Allergy = () => {
           }
         } else {
           setToastMessage(response.statusText);
+          setToastMessageType("error");
           setToastVisible(true);
         }
       }
@@ -177,6 +180,7 @@ const Allergy = () => {
         toastMessage={ToastMessage}
         visible={ToastVisible}
         ParentVisible={setToastVisible}
+        messageType={ToastMessageType}
       />
     </>
   );

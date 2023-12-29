@@ -4,8 +4,14 @@ type toastProps = {
   toastMessage: string;
   visible: boolean;
   ParentVisible: Dispatch<SetStateAction<boolean>>;
+  messageType: string;
 };
-const Toast = ({ toastMessage, visible, ParentVisible }: toastProps) => {
+const Toast = ({
+  toastMessage,
+  visible,
+  ParentVisible,
+  messageType,
+}: toastProps) => {
   const [ToastVisible, setToastVisible] = useState("invisible");
   useEffect(() => {
     if (visible) {
@@ -18,7 +24,7 @@ const Toast = ({ toastMessage, visible, ParentVisible }: toastProps) => {
   }, [visible]);
   return (
     <div className={`toast toast-end ${ToastVisible}`}>
-      <div className="alert alert-success">
+      <div className={`alert alert-${messageType}`}>
         <span>{toastMessage}</span>
       </div>
     </div>

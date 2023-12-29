@@ -17,6 +17,8 @@ const Cuisine = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [ToastMessage, setToastMessage] = useState<string>("");
   const [ToastVisible, setToastVisible] = useState<boolean>(false);
+  const [ToastMessageType, setToastMessageType] = useState<string>("");
+
   const router = useRouter();
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -177,6 +179,7 @@ const Cuisine = () => {
         toastMessage={ToastMessage}
         visible={ToastVisible}
         ParentVisible={setToastVisible}
+        messageType={ToastMessageType}
       />
     </>
   );
