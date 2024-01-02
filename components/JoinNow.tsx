@@ -56,7 +56,7 @@ const JoinNow = () => {
   };
 
   return (
-    <div className="w-1/2 flex justify-center" ref={counterRef}>
+    <div className="sm:w-1/1 md:w-1/2 flex justify-center" ref={counterRef}>
       <div className="prose p-6 border border-solid rounded-lg text-center">
         <h2 className="text-primary">Join Today!</h2>
         <h3>Prepify has currently{" " + userCount} Users!</h3>

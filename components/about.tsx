@@ -5,11 +5,11 @@ const About = () => {
       <div className="w-1/2 flex justify-center">
         <Image
           src="/assets/images/prepifyGoals.jpeg"
-          alt={"Image of goals"}
-          width={1000}
-          height={1000}
-          className="rounded md:h-max md:w-1/2"
-        ></Image>
+          alt="Image of goals"
+          width={500} // Adjust the width as needed
+          height={500} // Adjust the height as needed
+          className="rounded object-contain md:h-max md:w-1/2"
+        />
       </div>
       <div className="w-1/2 flex flex-col justify-center items-center">
         <div className="prose flex justify-center">
@@ -23,7 +23,7 @@ const About = () => {
               No worries about planning or choosing meals
             </li>
             <li className="text-lg">Automatically created shopping list</li>
-            <li className="text-lg">Free and accessable for everyone!</li>
+            <li className="text-lg">Free and accessible for everyone!</li>
           </ul>
         </div>
       </div>
