@@ -39,6 +39,7 @@ const MeasureSettings = (measureSettingImport: measureSettingImport) => {
         toastMessage={ToastMessage}
         visible={ToastVisible}
         ParentVisible={setToastVisible}
+        messageType="error"
       />
     </>
   );

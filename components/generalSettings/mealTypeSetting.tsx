@@ -38,7 +38,9 @@ const MealTypeSetting = (mealTypeSettingImport: mealTypeSettingImport) => {
         toastMessage={ToastMessage}
         visible={ToastVisible}
         ParentVisible={setToastVisible}
+        messageType="error"
       />
+      <div className="hidden alert-error alert-success"></div>
     </>
   );
 };

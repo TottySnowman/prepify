@@ -7,6 +7,8 @@ import { useState } from "react";
 const SaveSettings = (updatedUserSettings: userSettings) => {
   const [ToastMessage, setToastMessage] = useState<string>("");
   const [ToastVisible, setToastVisible] = useState<boolean>(false);
+  const [ToastMessageType, setToastMessageType] = useState<string>("");
+
   const saveSettingsClick = async () => {
     const session = await getSession();
     if (!session?.user) {
@@ -29,6 +31,7 @@ const SaveSettings = (updatedUserSettings: userSettings) => {
     });
     setToastMessage(await resp.json());
     setToastVisible(true);
+    setToastMessageType(resp.ok ? "success" : "error");
 
     if (resp.ok) {
       window.location.reload();
@@ -45,6 +48,7 @@ const SaveSettings = (updatedUserSettings: userSettings) => {
         toastMessage={ToastMessage}
         visible={ToastVisible}
         ParentVisible={setToastVisible}
+        messageType={ToastMessageType}
       />
     </>
   );

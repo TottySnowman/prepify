@@ -30,6 +30,7 @@ const PortionSetting = (portionImport: portionSettingImport) => {
         toastMessage={ToastMessage}
         visible={ToastVisible}
         ParentVisible={setToastVisible}
+        messageType="error"
       />
     </>
   );
