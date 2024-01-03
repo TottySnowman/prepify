@@ -1,0 +1,5 @@
+name: Build Image and deploy on Production
+on:
+  push:
+    branches: [main]
+
