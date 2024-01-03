@@ -20,7 +20,7 @@ export const GET = async (request: NextRequest) => {
     return new Response("Wrong key included!", { status: 401 });
   }
 
-  const currentWeekNumber = getCurrentWeekNumber();
+  const currentWeekNumber = getCurrentWeekNumber() + 1;
   const currentYear = new Date().getFullYear();
   const user_info = await prismaClient.users.findMany({
     include: {
