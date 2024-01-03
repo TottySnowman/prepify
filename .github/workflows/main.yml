@@ -17,10 +17,12 @@ jobs:
           set -x
 
       - name: Build Docker image
-        run: docker build -t prepify:latest .
+        run:  docker buildx create --use
+              docker buildx build --platform linux/amd64 -t prepify:latest --load .
 
       - name: Save Docker image as tar
-        run: docker save -o prepify.tar prepify:latest
+        run: | 
+              docker save -o prepify.tar prepify:latest
 
       - name: FTP Transfer to VPS
         uses: appleboy/scp-action@master
@@ -29,8 +31,8 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           password: ${{ secrets.VPS_PASSWORD }}
           port: ${{ secrets.VPS_PORT }}
-          source: "prepify.tar"
-          target: "/home/prepify.tar"
+          source: "./*"
+          target: "/home/prepify_user/prepify.tar"
 
       - name: SSH into VPS and load Docker image
         uses: appleboy/ssh-action@master
