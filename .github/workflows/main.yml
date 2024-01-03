@@ -11,9 +11,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Docker
-        uses: docker/setup-docker@v2
-        with:
-          dockerfile: dockerfile
+        uses: docker://docker/setup-docker@master
 
       - name: Build Docker image
         run: docker build -t prepify:latest .
