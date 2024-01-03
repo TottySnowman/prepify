@@ -14,7 +14,7 @@ const Nav = () => {
   const { data: session } = useSession();
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const loginDialog = useRef<HTMLDialogElement | null>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const burgerButton = useRef<HTMLButtonElement>(null);
 
   const [provider, setProvider] = useState<Record<
     string,
@@ -28,9 +28,14 @@ const Nav = () => {
     fetchProviders();
 
     function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setOpenMenu(false);
+      if (
+        burgerButton.current &&
+        burgerButton.current.contains(event.target as Node)
+      ) {
+        setOpenMenu(!openMenu);
+        return;
       }
+      setOpenMenu(false);
     }
 
     // Attach the event listener
@@ -176,8 +181,8 @@ const Nav = () => {
             <p>Prepify</p>
           </Link>
         </div>
-        <div className="sm:hidden md:flex-none md:block md:mb-16 md:pt-3">
-          <div className="flex space-x-4 items-center">
+        <div className="hidden md:flex-none md:block md:mb-16 md:pt-3">
+          <div className="md:flex md:space-x-4 md:items-center">
             <Link href="/step_by_step">
               <p>Guide</p>
             </Link>
@@ -224,12 +229,12 @@ const Nav = () => {
             )}
           </div>
         </div>
-        <div className="dropdown dropdown-end" ref={menuRef}>
+        <div className="sm:block md:hidden dropdown dropdown-end">
           <div className="md:hidden">
             <button
               type="button"
-              onClick={() => setOpenMenu(!openMenu)}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+              ref={burgerButton}
             >
               {openMenu === true ? (
                 <FaTimes className="text-1xl" />
@@ -243,11 +248,6 @@ const Nav = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
             >
-              <li>
-                <Link href="/weekly_recipe">
-                  <p>Weekly Recipe</p>
-                </Link>
-              </li>
               <li>
                 <Link href="/step_by_step">
                   <p>Guide</p>
@@ -287,7 +287,7 @@ const Nav = () => {
                     {provider ? (
                       <button
                         type="button"
-                        className="btn btn-primary"
+                        className="btn btn-primary items-center"
                         onClick={() => openLoginPanel()}
                       >
                         Sign in now!
