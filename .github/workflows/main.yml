@@ -2,4 +2,61 @@ name: Build Image and deploy on Production
 on:
   push:
     branches: [main]
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker
+        uses: docker/setup-docker@v2
+        with:
+          dockerfile: dockerfile
+
+      - name: Build Docker image
+        run: docker build -t prepify:latest .
+
+      - name: Save Docker image as tar
+        run: docker save -o prepify.tar prepify:latest
+
+      - name: FTP Transfer to VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_PORT }}
+          source: "prepify.tar"
+          target: "/home/prepify.tar"
+
+      - name: SSH into VPS and load Docker image
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            docker load -i /home/prepify.tar
+
+      - name: SSH into VPS and stop existing Docker container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            CONTAINER_ID=$(docker ps -q --filter ancestor=prepify:latest)
+            if [ ! -z "$CONTAINER_ID" ]; then
+              docker stop $CONTAINER_ID
+            fi
+
+      - name: Run Docker container on VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            docker run -d -p 3000:3000 prepify:latest
